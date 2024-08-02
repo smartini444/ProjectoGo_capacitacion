@@ -252,41 +252,6 @@ paths:
       summary: Save a quotation
       tags:
       - cryptocurrencies
-  /cotization:
-    post:
-      consumes:
-      - application/json
-      description: Save a cryptocurrency along with its quote using the provided name
-        and API
-      parameters:
-      - description: Cryptocurrency name
-        in: query
-        name: nombre
-        required: true
-        type: string
-      - description: API for obtaining the quote
-        in: query
-        name: api
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successful response with a message
-          schema:
-            $ref: '#/definitions/gin.H'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: Save cryptocurrency with quote
-      tags:
-      - cryptocurrencies
   /cotization/manual:
     post:
       consumes:
@@ -329,47 +294,14 @@ paths:
       summary: Register manual cryptocurrency quote
       tags:
       - quotes
-  /cryptocurrencies:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve a list of all cryptocurrencies
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda'
-            type: array
-      summary: Get all cryptocurrencies
-      tags:
-      - cryptocurrencies
-    post:
-      consumes:
-      - application/json
-      description: Save una nueva criptomoneda
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda'
-            type: array
-      summary: Save una criptomoneda
-      tags:
-      - cryptocurrencies
-  /cryptocurrencies/cryptocurrency/{id}:
+  /cryptocurrencies/{id}:
     get:
       consumes:
       - application/json
       description: Retrieve a cryptocurrency by its ID
       parameters:
       - description: Cryptocurrency ID
-        in: query
+        in: path
         name: id
         required: true
         type: integer
@@ -380,7 +312,59 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda'
+        "400":
+          description: 'error": "ID inválido'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 'error": "Error al obtener la criptomoneda'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Get cryptocurrency by ID
+      tags:
+      - cryptocurrencies
+    put:
+      consumes:
+      - application/json
+      description: Update the details of a cryptocurrency by its ID
+      parameters:
+      - description: Cryptocurrency ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Cryptocurrency Data
+        in: body
+        name: cryptocurrency
+        required: true
+        schema:
+          $ref: '#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message": "Successful response with a message'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 'error": "Bad Request'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 'error": "Internal Server Error'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update cryptocurrency by ID
       tags:
       - cryptocurrencies
   /cryptocurrencies/lastcotization/{nombre}:
@@ -446,41 +430,6 @@ paths:
               type: string
             type: object
       summary: Retrieve the latest quotation for a given cryptocurrency name
-      tags:
-      - cryptocurrencies
-  /cryptocurrency/{id}:
-    put:
-      consumes:
-      - application/json
-      description: Update the details of a cryptocurrency by its ID
-      parameters:
-      - description: Cryptocurrency ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Cryptocurrency Data
-        in: body
-        name: cryptocurrency
-        required: true
-        schema:
-          $ref: '#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successful response with a message
-          schema:
-            $ref: '#/definitions/gin.H'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: Update cryptocurrency by ID
       tags:
       - cryptocurrencies
   /usuarios:
@@ -727,15 +676,15 @@ paths:
       summary: Find favorite cryptocurrencies by user ID
       tags:
       - users
-  /usuarios/monedaFavorita:
-    post:
+  /usuarios/{id}/monedasFavoritas:
+    put:
       consumes:
       - application/json
       description: Add a favorite cryptocurrency to a user's list by their ID and
         the cryptocurrency's name
       parameters:
       - description: User ID
-        in: query
+        in: path
         name: id
         required: true
         type: integer

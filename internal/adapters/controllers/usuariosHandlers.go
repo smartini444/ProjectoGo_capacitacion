@@ -246,12 +246,12 @@ func (h *UsuarioHandler) PatchUsuarioByID(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param id query int true "User ID"
+// @Param id path int true "User ID" // Utiliza `path` en lugar de `query` para parámetros en la ruta
 // @Param nombre query string true "Cryptocurrency Name"
 // @Success 200 {object} map[string]string "message": "Moneda favorita guardada exitosamente"
 // @Failure 400 {object} map[string]string "error": "ID inválido"
 // @Failure 500 {object} map[string]string "error": "Internal Server Error"
-// @Router /usuarios/monedaFavorita [post]
+// @Router /usuarios/{id}/monedasFavoritas [put]
 func (c *UsuarioHandler) GuardarMonedaFavorita(ctx *gin.Context) {
 	monedaNombre := ctx.Query("nombre")
 	usuarioId, err := strconv.Atoi(ctx.Query("id"))

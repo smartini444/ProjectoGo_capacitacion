@@ -183,57 +183,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/cotization": {
-            "post": {
-                "description": "Save a cryptocurrency along with its quote using the provided name and API",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cryptocurrencies"
-                ],
-                "summary": "Save cryptocurrency with quote",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Cryptocurrency name",
-                        "name": "nombre",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "API for obtaining the quote",
-                        "name": "api",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful response with a message",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
         "/cotization/manual": {
             "post": {
                 "description": "Register a manual quote for a cryptocurrency for a specific user by their ID",
@@ -291,88 +240,6 @@ const docTemplate = `{
                             "additionalProperties": {
                                 "type": "string"
                             }
-                        }
-                    }
-                }
-            }
-        },
-        "/cryptocurrencies": {
-            "get": {
-                "description": "Retrieve a list of all cryptocurrencies",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cryptocurrencies"
-                ],
-                "summary": "Get all cryptocurrencies",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Save una nueva criptomoneda",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cryptocurrencies"
-                ],
-                "summary": "Save una criptomoneda",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/cryptocurrencies/cryptocurrency/{id}": {
-            "get": {
-                "description": "Retrieve a cryptocurrency by its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cryptocurrencies"
-                ],
-                "summary": "Get cryptocurrency by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Cryptocurrency ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
                         }
                     }
                 }
@@ -475,7 +342,55 @@ const docTemplate = `{
                 }
             }
         },
-        "/cryptocurrency/{id}": {
+        "/cryptocurrencies/{id}": {
+            "get": {
+                "description": "Retrieve a cryptocurrency by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Get cryptocurrency by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Cryptocurrency ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Error al obtener la criptomoneda",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
             "put": {
                 "description": "Update the details of a cryptocurrency by its ID",
                 "consumes": [
@@ -508,21 +423,30 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response with a message",
+                        "description": "message\": \"Successful response with a message",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "error\": \"Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "error\": \"Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -564,66 +488,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "error\": \"Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "error\": \"Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/usuarios/monedaFavorita": {
-            "post": {
-                "description": "Add a favorite cryptocurrency to a user's list by their ID and the cryptocurrency's name",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Add favorite cryptocurrency to user",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Cryptocurrency Name",
-                        "name": "nombre",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "message\": \"Moneda favorita guardada exitosamente",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "error\": \"ID inválido",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -929,6 +793,66 @@ const docTemplate = `{
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios/{id}/monedasFavoritas": {
+            "put": {
+                "description": "Add a favorite cryptocurrency to a user's list by their ID and the cryptocurrency's name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Add favorite cryptocurrency to user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cryptocurrency Name",
+                        "name": "nombre",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Moneda favorita guardada exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     },

@@ -207,13 +207,4 @@ func (c *CryptoController) FindAllByFilterUsuario(ctx *gin.Context) {
 	})
 }
 
-/*func (c *CryptoController) BorrarCotizacionById(ctx *gin.Context) {
-	idStr := ctx.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
-		return
-	}
-	c.serv.BorrarCotizacionManual(id)
-	return
-}*/
+

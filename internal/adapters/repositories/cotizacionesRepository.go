@@ -23,9 +23,8 @@ func (r *MySQLCryptoRepository) SaveCotizacion(cripto criptomonedas.Cotizacion) 
 
 func (r *MySQLCryptoRepository) FindByCotizacionID(id int) (*criptomonedas.Cotizacion, error) {
 	query := `
-	SELECT c.id, m.nombre, c.cotizacion, c.fecha , c.manual , c.usuario_id
+	SELECT c.id, c.cripto_id, c.cotizacion, c.fecha , c.manual , c.usuario_id
 	FROM cotizaciones c
-	JOIN monedas m ON c.cripto_id = m.id
 	WHERE c.id = ?
 `
 	row := r.db.QueryRow(query, id)
@@ -39,8 +38,13 @@ func (r *MySQLCryptoRepository) FindByCotizacionID(id int) (*criptomonedas.Cotiz
 			return nil, err
 		}
 	}
+	if fecha == "" {
+		log.Println("La fecha está vacía")
+		return &moneda, nil
+	}
+
 	// Convertir fecha a time.Time si es necesario
-	moneda.Fecha, err = time.Parse("2006-01-02 15:04:05", fecha)
+	moneda.Fecha, err = time.Parse(time.RFC3339, fecha)
 	if err != nil {
 		log.Println("Error al convertir fecha:", err)
 	}
@@ -322,12 +326,28 @@ func (r *MySQLCryptoRepository) FindAllByFilterForUser(filter criptomonedas.Crip
 }
 
 func (r *MySQLCryptoRepository) BorrarCotizacionById(cotizacionId int) error {
+	// Imprimir información de depuración
+	fmt.Printf("Intentando borrar cotización con id %v\n", cotizacionId)
+
 	query := "DELETE FROM cotizaciones WHERE id = ?"
 	args := []interface{}{cotizacionId}
-	_, err := r.db.Exec(query, args)
+	fmt.Printf("Ejecutando consulta: %s con argumento: %v\n", query, args)
+
+	result, err := r.db.Exec(query, args...)
 	if err != nil {
-		return fmt.Errorf("no se borro la cotizacion de id %v", cotizacionId)
+		return fmt.Errorf("error al ejecutar la consulta DELETE: %w", err)
 	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("error al obtener filas afectadas: %w", err)
+	}
+
+	fmt.Printf("Filas afectadas: %d\n", rowsAffected)
+	if rowsAffected == 0 {
+		return fmt.Errorf("no se borró ninguna cotización con id %v", cotizacionId)
+	}
+
 	return nil
 }
 
