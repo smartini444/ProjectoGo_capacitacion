@@ -1,0 +1,66 @@
+paginacion con orden
+Invoke-WebRequest -Uri "http://localhost:8080/cryptocurrencies?page_number=1&page_size=2&order=desc" -Method GET -Headers @{"Content-Type"="application/json"}
+paginacion simple
+Invoke-WebRequest -Uri "http://localhost:8080/cryptocurrencies?page_number=1&page_size=2" -Method GET -Headers @{"Content-Type"="application/json"}
+ultima cotizacion de Bitcoin
+Invoke-WebRequest -Uri "http://localhost:8080/cryptocurrencies/lastcotization/Bitcoin" -Method GET -Headers @{"Content-Type"="application/json"}
+ultima cotizacion ethereum
+Invoke-WebRequest -Uri "http://localhost:8080/cryptocurrencies/lastcotization/Ethereum" -Method GET -Headers @{"Content-Type"="application/json"}
+todas las cotizaciones
+Invoke-WebRequest -Uri "http://localhost:8080/cryptocurrencies/All" -Method GET -Headers @{"Content-Type"="application/json"}
+cotizacion externa paprika
+Invoke-WebRequest -Uri "http://localhost:8080/cotization/externa?nombre=Ripple%20RXP%20589&api=coinpaprika" -Method POST -Headers @{"Content-Type"="application/json"}
+cotizacion externa cryptoya
+Invoke-WebRequest -Uri "http://localhost:8080/cotization/externa?nombre=Bitcoin&api=cryptoya" -Method POST -Headers @{"Content-Type"="application/json"}
+registrar nueva crypto con cotizacion externa
+Invoke-WebRequest -Uri "http://localhost:8080/cryptocurrencies/externa?nombre=Tether&api=cryptoya" -Method POST -Headers @{"Content-Type"="application/json"}
+
+crear usuario
+$body = @{
+    usuario = @{
+        nombre           = "Diego"
+        apellidos        = "Perez"
+        fecha_nacimiento = "1990-05-15T00:00:00Z"  # Incluyendo hora y zona horaria
+        codigoUsuario    = "124355757"
+        email            = "diego.peres@example.com"
+        tipoDocumento    = "DNI"
+        fecha_registro   = "2024-07-26T14:48:11Z"  # Incluyendo hora y zona horaria
+        esta_activo      = $true
+    }
+    monedasFavoritas = @(8, 2, 9)
+} | ConvertTo-Json
+
+Invoke-WebRequest -Uri "http://localhost:8080/usuarios" -Method POST -Headers @{"Content-Type"="application/json"} -Body $body
+
+actualizar usuario
+$body = @{
+    nombre           = "Juan Perez"
+    apellidos        = "Perez"
+    fecha_nacimiento = "1990-05-15T00:00:00Z"
+    codigoUsuario    = "1234"
+    email            = "juan.perez@example.com"
+    tipoDocumento    = "DNI"
+    fecha_registro   = "2024-07-26T14:48:11Z"
+    esta_activo      = $true
+} | ConvertTo-Json
+
+Invoke-WebRequest -Uri "http://localhost:8080/usuarios/7" -Method PUT -Headers @{"Content-Type"="application/json"} -Body $body
+
+patch usuario
+
+
+$body = @{
+    nombre          = "Juan Carlos"
+    email           = "juan.carlos@example.com"
+    monedas         = @(10,12)  # Lista de monedas que se desean actualizar (si corresponde)
+} | ConvertTo-Json
+
+Invoke-WebRequest -Uri "http://localhost:8080/usuarios/7" -Method PATCH -Headers @{"Content-Type"="application/json"} -Body $body
+
+findusuaro by Id
+Invoke-WebRequest -Uri "http://localhost:8080/usuarios/7" -Method GET -Headers @{"Content-Type"="application/json"}
+
+
+ Invoke-WebRequest -Uri "http://localhost:8080/usuarios/7/cotizaciones?nombre=Litecoin" -Method GET -Headers @{"Content-Type"="application/json"}
+
+

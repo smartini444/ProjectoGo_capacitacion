@@ -1,0 +1,1083 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "app para cotizaciones de criptos",
+        "title": "Cripto Api",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/cotizacion/manual/{id}": {
+            "delete": {
+                "description": "Delete a manual quote for a cryptocurrency for a specific user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quotes"
+                ],
+                "summary": "Delete manual cryptocurrency quote",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Quote ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Cotización eliminada exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cotizacion/manual/{usuarioId}/{cotizacionId}": {
+            "put": {
+                "description": "Update a manual quote for a cryptocurrency for a specific user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quotes"
+                ],
+                "summary": "Update manual cryptocurrency quote",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "usuarioId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Quote ID",
+                        "name": "cotizacionId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Cryptocurrency Quote",
+                        "name": "cotizacion",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Cotizacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Cotización actualizada exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido\" or \"Datos de cotización inválidos",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cotizaciones": {
+            "post": {
+                "description": "Save a new quotation",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Save a quotation",
+                "parameters": [
+                    {
+                        "description": "Cotizacion to be saved",
+                        "name": "cotizacion",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Cotizacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with a message",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/cotization": {
+            "post": {
+                "description": "Save a cryptocurrency along with its quote using the provided name and API",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Save cryptocurrency with quote",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cryptocurrency name",
+                        "name": "nombre",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "API for obtaining the quote",
+                        "name": "api",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with a message",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/cotization/manual": {
+            "post": {
+                "description": "Register a manual quote for a cryptocurrency for a specific user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quotes"
+                ],
+                "summary": "Register manual cryptocurrency quote",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Cryptocurrency Quote",
+                        "name": "cotizacion",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Cotizacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Cotización registrada exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido\" or \"Datos de moneda inválidos",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cryptocurrencies": {
+            "get": {
+                "description": "Retrieve a list of all cryptocurrencies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Get all cryptocurrencies",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Save una nueva criptomoneda",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Save una criptomoneda",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cryptocurrencies/cryptocurrency/{id}": {
+            "get": {
+                "description": "Retrieve a cryptocurrency by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Get cryptocurrency by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Cryptocurrency ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
+                        }
+                    }
+                }
+            }
+        },
+        "/cryptocurrencies/lastcotization/{nombre}": {
+            "get": {
+                "description": "Get the latest quote for a given cryptocurrency name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Get latest quote by cryptocurrency name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cryptocurrency name",
+                        "name": "nombre",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with the latest quote",
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Cotizacion"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/cryptocurrencies/latest": {
+            "get": {
+                "description": "Retrieves the most recent quotation for a cryptocurrency identified by its name.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Retrieve the latest quotation for a given cryptocurrency name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cryptocurrency name",
+                        "name": "nombre",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response with the latest quotation",
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Cotizacion"
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "error\": \"Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cryptocurrency/{id}": {
+            "put": {
+                "description": "Update the details of a cryptocurrency by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Update cryptocurrency by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Cryptocurrency ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Cryptocurrency Data",
+                        "name": "cryptocurrency",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with a message",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios": {
+            "post": {
+                "description": "Create a new user along with their favorite cryptocurrencies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create a new user",
+                "parameters": [
+                    {
+                        "description": "User and Favorite Cryptocurrencies",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.UsuarioRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Usuario creado exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios/monedaFavorita": {
+            "post": {
+                "description": "Add a favorite cryptocurrency to a user's list by their ID and the cryptocurrency's name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Add favorite cryptocurrency to user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cryptocurrency Name",
+                        "name": "nombre",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Moneda favorita guardada exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios/{id}": {
+            "get": {
+                "description": "Get the details of a user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Find user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Usuario"
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "message\": \"Usuario no encontrado",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update the details of an existing user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update a user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User details to update",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Usuario"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Usuario actualizado exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Partially update the details of an existing user by their ID. This can include updating their favorite cryptocurrencies.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Partially update a user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User details to update, including favorite cryptocurrencies",
+                        "name": "updates",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Usuario actualizado exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios/{id}/cotizaciones": {
+            "get": {
+                "description": "Find all cryptocurrencies by filter for a specific user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Find all cryptocurrencies by filter",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Nombre",
+                        "name": "nombre",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "Minimum Cotizacion",
+                        "name": "min_cotizacion",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "Maximum Cotizacion",
+                        "name": "max_cotizacion",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start Date in RFC3339 format",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date in RFC3339 format",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Size",
+                        "name": "page_size",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Number",
+                        "name": "page_number",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with summary and data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios/{id}/monedas": {
+            "get": {
+                "description": "Get the list of favorite cryptocurrencies for a user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Find favorite cryptocurrencies by user ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "gin.H": {
+            "type": "object",
+            "additionalProperties": {}
+        },
+        "primerProjecto_internal_entities_criptomonedas.Cotizacion": {
+            "description": "Estructura que define una cotización de criptomoneda.",
+            "type": "object",
+            "properties": {
+                "cotizacion": {
+                    "description": "Cotizacion es el valor de la criptomoneda en un momento específico.\n@example 50000.00",
+                    "type": "number"
+                },
+                "cripto_id": {
+                    "description": "CriptoMoneda_ID es el identificador de la criptomoneda asociada.\n@example 1",
+                    "type": "integer"
+                },
+                "fecha": {
+                    "description": "Fecha es la fecha y hora en que se registró la cotización.\n@example 2024-07-29T12:00:00Z",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID es el identificador único de la cotización.\n@example 123",
+                    "type": "integer"
+                },
+                "manual": {
+                    "description": "Manual indica si la cotización fue ingresada manualmente.\n@example true",
+                    "type": "boolean"
+                },
+                "usuario_id": {
+                    "description": "UsuarioId es el identificador del usuario que ingresó la cotización.\n@example 42",
+                    "type": "integer"
+                }
+            }
+        },
+        "primerProjecto_internal_entities_criptomonedas.CriptoMoneda": {
+            "description": "Estructura que define una criptomoneda.",
+            "type": "object",
+            "properties": {
+                "codigo": {
+                    "description": "Codigo es el código de la criptomoneda.\n@example BTC",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID es el identificador único de la criptomoneda.\n@example 1",
+                    "type": "integer"
+                },
+                "nombre": {
+                    "description": "Nombre es el nombre de la criptomoneda.\n@example Bitcoin",
+                    "type": "string"
+                }
+            }
+        },
+        "primerProjecto_internal_entities_criptomonedas.TipoDocumento": {
+            "type": "string",
+            "enum": [
+                "DNI",
+                "pasaporte",
+                "cedula"
+            ],
+            "x-enum-varnames": [
+                "DNI",
+                "Pasaporte",
+                "Cedula"
+            ]
+        },
+        "primerProjecto_internal_entities_criptomonedas.Usuario": {
+            "description": "Estructura que define a un usuario del sistema.",
+            "type": "object",
+            "properties": {
+                "apellido": {
+                    "description": "Apellidos son los apellidos del usuario.\n@example Perez",
+                    "type": "string"
+                },
+                "codigoUsuario": {
+                    "description": "CodigoUsuario es el código de usuario.\n@example JP1990",
+                    "type": "string"
+                },
+                "email": {
+                    "description": "Email es el correo electrónico del usuario.\n@example juan.perez@example.com",
+                    "type": "string"
+                },
+                "esta_activo": {
+                    "description": "Esta_activo indica si el usuario está activo.\n@example true",
+                    "type": "boolean"
+                },
+                "fecha_Nacimiento": {
+                    "description": "Fecha_Nacimiento es la fecha de nacimiento del usuario.\n@example 1990-01-01T00:00:00Z",
+                    "type": "string"
+                },
+                "fecha_registro": {
+                    "description": "Fecha_registro es la fecha en que se registró el usuario.\n@example 2024-07-29T12:00:00Z",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID es el identificador único del usuario.\n@example 1",
+                    "type": "integer"
+                },
+                "nombre": {
+                    "description": "Nombre es el nombre del usuario.\n@example Juan",
+                    "type": "string"
+                },
+                "tipoDocumento": {
+                    "description": "TipoDocumento es el tipo de documento del usuario.\n@example DNI",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.TipoDocumento"
+                        }
+                    ]
+                }
+            }
+        },
+        "primerProjecto_internal_entities_criptomonedas.UsuarioRequest": {
+            "description": "Estructura de la solicitud para crear un nuevo usuario con sus criptomonedas favoritas.",
+            "type": "object",
+            "properties": {
+                "monedasFavoritas": {
+                    "description": "MonedasFavoritas contiene una lista de IDs de las criptomonedas favoritas del usuario.\n@description Lista de IDs de las criptomonedas favoritas del usuario.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "usuario": {
+                    "description": "Usuario contiene la información del usuario.\n@description Información del usuario.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Usuario"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
