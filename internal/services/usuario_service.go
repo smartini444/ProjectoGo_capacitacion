@@ -92,6 +92,21 @@ func (s *UsuarioService) PatchUsuarioByID(id int, updates map[string]interface{}
 	return nil
 }
 
+func (s *UsuarioService) UpdateMonedasDeInteres(id int, monedas []string) error {
+	var ids []int
+	for _, codigo := range monedas {
+		moneda, err := s.repoCripto.FindCryptoByCode(codigo)
+		if err != nil {
+			return nil
+		}
+		ids = append(ids, moneda.Id)
+	}
+	if err := s.repoUsuario.UpdateMonedasDeInteres(id, ids); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s *UsuarioService) GuardarMonedaFavorita(nombreMoneda string, UsuarioId int) error {
 
 	// Buscar la criptomoneda por nombre

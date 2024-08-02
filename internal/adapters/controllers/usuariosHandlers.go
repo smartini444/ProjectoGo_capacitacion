@@ -115,12 +115,17 @@ func (h *UsuarioHandler) UpsertUsuario(c *gin.Context) {
 		return
 	}
 
-	for _, moneda := range request.MonedasFavoritas {
+	if err := h.serv.UpdateMonedasDeInteres(request.Usuario.Id, request.MonedasFavoritas); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	/*for _, moneda := range request.MonedasFavoritas {
 		if err := h.serv.GuardarMonedaFavorita(moneda, request.Usuario.Id); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-	}
+	}*/
 
 	c.JSON(http.StatusOK, gin.H{"message": "Usuario upserteado exitosamente"})
 }
