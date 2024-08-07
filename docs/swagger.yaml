@@ -432,6 +432,85 @@ paths:
       summary: Retrieve the latest quotation for a given cryptocurrency name
       tags:
       - cryptocurrencies
+  /csv/async/download/{task_id}:
+    get:
+      description: Descarga el archivo CSV generado asíncronamente mediante el ID
+        de la tarea
+      parameters:
+      - description: ID de la tarea
+        in: path
+        name: task_id
+        required: true
+        type: string
+      produces:
+      - text/csv
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "404":
+          description: Error al descargar el archivo CSV
+          schema:
+            type: string
+      summary: Descargar archivo CSV generado
+      tags:
+      - csv
+  /csv/async/generate:
+    post:
+      description: Inicia una tarea para generar un archivo CSV con datos de criptomonedas
+        de forma asíncrona
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: task_id
+          schema:
+            type: string
+      summary: Iniciar tarea asíncrona de generación de CSV
+      tags:
+      - csv
+  /csv/async/status/{task_id}:
+    get:
+      description: Obtiene el estado de una tarea asíncrona de generación de CSV mediante
+        el ID de la tarea
+      parameters:
+      - description: ID de la tarea
+        in: path
+        name: task_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: status
+          schema:
+            type: string
+        "404":
+          description: Tarea no encontrada
+          schema:
+            type: string
+      summary: Obtener el estado de una tarea de generación de CSV
+      tags:
+      - csv
+  /csv/sync/generate:
+    get:
+      description: Genera un archivo CSV con datos de criptomonedas de forma sincrónica
+      produces:
+      - text/csv
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "500":
+          description: Error al generar el archivo CSV
+          schema:
+            type: string
+      summary: Generar CSV sincrónico
+      tags:
+      - csv
   /usuarios:
     post:
       consumes:

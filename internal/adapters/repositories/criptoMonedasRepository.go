@@ -65,32 +65,30 @@ func (r *MySQLCryptoRepository) FindByMonedaID(id int) (*criptomonedas.CriptoMon
 
 func (r *MySQLCryptoRepository) FindAllMonedas() ([]*criptomonedas.CriptoMoneda, error) {
 	query := "SELECT * FROM monedas"
-	moneda := criptomonedas.CriptoMoneda{}
 	rows, err := r.db.Query(query)
 	if err != nil {
-		log.Println("no se encotraron lineas")
+		log.Println("no se encontraron filas")
 		return nil, err
 	}
 	defer rows.Close()
 
-	var criptomonedas []*criptomonedas.CriptoMoneda
+	var monedas []*criptomonedas.CriptoMoneda
 
 	for rows.Next() {
-		moneda1 := moneda
-		err := rows.Scan(&moneda1.Nombre, &moneda1.Id, &moneda.Codigo)
+		moneda := &criptomonedas.CriptoMoneda{}
+		err := rows.Scan(&moneda.Id, &moneda.Nombre, &moneda.Codigo)
 		if err != nil {
 			log.Println("Error al escanear fila:", err)
 			continue
 		}
-		criptomonedas = append(criptomonedas, &moneda)
+		monedas = append(monedas, moneda)
 	}
 	if err := rows.Err(); err != nil {
 		log.Println("Error al iterar sobre las filas:", err)
 		return nil, err
 	}
 
-	return criptomonedas, nil
-
+	return monedas, nil
 }
 
 func (r *MySQLCryptoRepository) UpdateMoneda(id int, moneda criptomonedas.CriptoMoneda) error {

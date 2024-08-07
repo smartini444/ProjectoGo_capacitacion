@@ -1,0 +1,3900 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>cmd: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">primerProjecto/cmd/main.go (0.0%)</option>
+				
+				<option value="file1">primerProjecto/docs/docs.go (0.0%)</option>
+				
+				<option value="file2">primerProjecto/internal/adapters/controllers/cotizacionController.go (0.0%)</option>
+				
+				<option value="file3">primerProjecto/internal/adapters/controllers/criptoMonedasController.go (0.0%)</option>
+				
+				<option value="file4">primerProjecto/internal/adapters/controllers/usuariosHandlers.go (0.0%)</option>
+				
+				<option value="file5">primerProjecto/internal/adapters/cotizadores/cotizadores.go (75.0%)</option>
+				
+				<option value="file6">primerProjecto/internal/adapters/cotizadores/criptoYa_Cotizador.go (0.0%)</option>
+				
+				<option value="file7">primerProjecto/internal/adapters/cotizadores/mock/cotizadores.go (100.0%)</option>
+				
+				<option value="file8">primerProjecto/internal/adapters/cotizadores/paprika_Cotizador.go (0.0%)</option>
+				
+				<option value="file9">primerProjecto/internal/adapters/repositories/cotizacionesRepository.go (0.0%)</option>
+				
+				<option value="file10">primerProjecto/internal/adapters/repositories/criptoMonedasRepository.go (0.0%)</option>
+				
+				<option value="file11">primerProjecto/internal/adapters/repositories/mock/criptoMonedasRepository.go (14.3%)</option>
+				
+				<option value="file12">primerProjecto/internal/adapters/repositories/mock/usuarioRepository.go (0.0%)</option>
+				
+				<option value="file13">primerProjecto/internal/adapters/repositories/usuarioRepository.go (0.0%)</option>
+				
+				<option value="file14">primerProjecto/internal/services/Auth_service.go (0.0%)</option>
+				
+				<option value="file15">primerProjecto/internal/services/cotizaciones_service.go (80.8%)</option>
+				
+				<option value="file16">primerProjecto/internal/services/cripto_service.go (5.3%)</option>
+				
+				<option value="file17">primerProjecto/internal/services/usuario_service.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+import (
+        "database/sql"
+        "log"
+
+        _ "primerProjecto/docs"
+
+        swaggerFiles "github.com/swaggo/files"
+
+        controllers "primerProjecto/internal/adapters/controllers"
+        "primerProjecto/internal/adapters/cotizadores"
+        repositories "primerProjecto/internal/adapters/repositories"
+        "primerProjecto/internal/services"
+
+        "github.com/gin-gonic/gin"
+        _ "github.com/go-sql-driver/mysql"
+        ginSwagger "github.com/swaggo/gin-swagger"
+)
+
+// @title     Cripto Api
+//@version 1.0
+//@description app para cotizaciones de criptos
+
+// host localhost:8080
+func main() <span class="cov0" title="0">{
+
+        router := gin.Default()
+
+        // Configurar ruta para la documentación JSON de Swagger
+        router.GET("/swagger.json", func(c *gin.Context) </span><span class="cov0" title="0">{
+                c.File("primerProjecto/docs/swagger.json")
+        }</span>)
+
+        // Configurar la conexión a la base de datos MySQL
+        <span class="cov0" title="0">db, err := sql.Open("mysql", "root:1234@tcp(172.18.224.1:3306)/?parseTime=true")
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+        <span class="cov0" title="0">defer db.Close()
+
+        // Intentar crear la base de datos (opcional si ya existe)
+        _, err = db.Exec("CREATE DATABASE IF NOT EXISTS proyecto_cripto")
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+
+        // Seleccionar la base de datos recién creada o existente
+        <span class="cov0" title="0">_, err = db.Exec("USE proyecto_cripto")
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+
+        // Crear tabla monedas
+        <span class="cov0" title="0">_, err = db.Exec(`
+    CREATE TABLE IF NOT EXISTS monedas (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nombre VARCHAR(100) NOT NULL
+    )
+`)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+
+        // Crear tabla cotizaciones
+        <span class="cov0" title="0">_, err = db.Exec(`
+    CREATE TABLE IF NOT EXISTS cotizaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cripto_id INT NOT NULL,
+    cotizacion DECIMAL(10, 2) NOT NULL,
+    fecha DATETIME NOT NULL,
+    manual BOOLEAN NOT NULL DEFAULT FALSE,
+    usuario_id INT DEFAULT NULL,
+    FOREIGN KEY (cripto_id) REFERENCES monedas(id),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+)
+`)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+
+        <span class="cov0" title="0">_, err = db.Exec(`
+        CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    codigo_usuario VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    tipo_documento ENUM('DNI', 'pasaporte', 'cedula') NOT NULL,
+    fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    esta_activo BOOLEAN NOT NULL DEFAULT TRUE
+    )
+`)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+
+        <span class="cov0" title="0">_, err = db.Exec(`
+    CREATE TABLE IF NOT EXISTS usuario_moneda (
+            usuario_id INT NOT NULL,
+            moneda_id INT NOT NULL,
+            PRIMARY KEY (usuario_id, moneda_id),
+            FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+            FOREIGN KEY (moneda_id) REFERENCES monedas(id)
+    )
+`)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+        <span class="cov0" title="0">_, err = db.Exec(`
+        CREATE TABLE IF NOT EXISTS auditoria_cotizacion (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                usuario_id INT,
+                cotizacion_id INT,
+                log TEXT NOT NULL,
+                created_at DATETIME DEFAULT NOW(),
+                FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE SET NULL,
+                FOREIGN KEY (cotizacion_id) REFERENCES cotizaciones(id) ON DELETE SET NULL
+        )
+`)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+
+        // Crear las instancias de los repositorios
+        <span class="cov0" title="0">repoUsuario := repositories.NewMySQLUsuarioRepository(db)
+        repoCripto := repositories.NewMySQLCryptoRepository(db)
+
+        // Crear las instancias de los servicios usando las interfaces
+        serviceUsuario := services.NewUsuarioService(repoUsuario, repoCripto)
+        serviceCripto := services.NewCryptoService(repoCripto, cotizadores.GetCotizador)
+
+        //handlers/controllers
+        criptoHandler := controllers.NewCryptoController(serviceCripto)
+        usuarioHandler := controllers.NewUsuarioHandler(serviceUsuario)
+
+        router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+        // Configurar tus rutas y controladores
+        /*router.POST("/cryptocurrencies", controller.RegistrarCriptoMoneda)
+        router.POST("/cotization", controller.RegistrarCotizacion)
+        router.POST("/cryptocurrencies/externa", controller.SaveMonedaConCotizacion)
+        router.POST("/cotization/externa", controller.SaveCotizacionExterna)*/
+
+        //cotizaciones manuales
+        router.POST("cotization/manual", usuarioHandler.RegistrarCotizacionManual)
+        router.DELETE("cotizacion/manual/:id", usuarioHandler.BorrarCotizacionManual)
+        router.PUT("cotizacion/manual/:usuarioId/:cotizacionId", usuarioHandler.ActualizarCotizacionManual)
+
+        router.POST("/usuarios", usuarioHandler.CreateUsuario)
+        router.PUT("/usuarios/:id", usuarioHandler.UpdateUsuarioByID)
+        router.PUT("/usuarios/:id/monedasFavoritas", usuarioHandler.GuardarMonedaFavorita)
+        router.PATCH("/usuarios/:id", usuarioHandler.PatchUsuarioByID)
+        router.GET("/usuarios/:id", usuarioHandler.FindUsuarioByID)
+        router.GET("/usuarios/:id/monedas", usuarioHandler.FindMonedasByUsuarioID)
+        router.GET("/usuarios/:id/cotizaciones", criptoHandler.FindAllByFilterUsuario)
+        router.POST("/upsert-usuario", usuarioHandler.UpsertUsuario)
+
+        router.POST("/cryptocurrencies", services.AuthMiddleware(), criptoHandler.RegistrarCriptoMoneda)
+        router.POST("/cotization", services.AuthMiddleware(), criptoHandler.RegistrarCotizacion)
+        router.POST("/cryptocurrencies/externa", services.AuthMiddleware(), criptoHandler.SaveMonedaConCotizacion)
+        router.POST("/cotization/externa", services.AuthMiddleware(), criptoHandler.SaveCotizacionExterna)
+
+        router.GET("/cryptocurrencies/All", criptoHandler.FindAll)
+        router.GET("/cryptocurrencies/cryptocurrency/:id", criptoHandler.FindMonedaByID)
+        router.GET("/cryptocurrencies/:nombre/cryptocurrency", criptoHandler.FindMondaByNombre)
+        router.GET("/cryptocurrencies", criptoHandler.FindAllByFilter)
+        router.GET("/cryptocurrencies/lastcotization/:nombre", criptoHandler.FindUltimaCotizacion)
+        router.PUT("/cryptocurrency/:id", criptoHandler.HandleUpdateCryptoByID)
+
+        // Iniciar el servidor HTTP
+        router.Run(":8080")</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">// Package docs Code generated by swaggo/swag. DO NOT EDIT
+package docs
+
+import "github.com/swaggo/swag"
+
+const docTemplate = `{
+    "schemes": {{ marshal .Schemes }},
+    "swagger": "2.0",
+    "info": {
+        "description": "{{escape .Description}}",
+        "title": "{{.Title}}",
+        "contact": {},
+        "version": "{{.Version}}"
+    },
+    "host": "{{.Host}}",
+    "basePath": "{{.BasePath}}",
+    "paths": {
+        "/cotizacion/manual/{id}": {
+            "delete": {
+                "description": "Delete a manual quote for a cryptocurrency for a specific user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quotes"
+                ],
+                "summary": "Delete manual cryptocurrency quote",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Quote ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Cotización eliminada exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cotizacion/manual/{usuarioId}/{cotizacionId}": {
+            "put": {
+                "description": "Update a manual quote for a cryptocurrency for a specific user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quotes"
+                ],
+                "summary": "Update manual cryptocurrency quote",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "usuarioId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Quote ID",
+                        "name": "cotizacionId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Cryptocurrency Quote",
+                        "name": "cotizacion",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Cotizacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Cotización actualizada exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido\" or \"Datos de cotización inválidos",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cotizaciones": {
+            "post": {
+                "description": "Save a new quotation",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Save a quotation",
+                "parameters": [
+                    {
+                        "description": "Cotizacion to be saved",
+                        "name": "cotizacion",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Cotizacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with a message",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/cotization/manual": {
+            "post": {
+                "description": "Register a manual quote for a cryptocurrency for a specific user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quotes"
+                ],
+                "summary": "Register manual cryptocurrency quote",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Cryptocurrency Quote",
+                        "name": "cotizacion",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Cotizacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Cotización registrada exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido\" or \"Datos de moneda inválidos",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cryptocurrencies/lastcotization/{nombre}": {
+            "get": {
+                "description": "Get the latest quote for a given cryptocurrency name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Get latest quote by cryptocurrency name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cryptocurrency name",
+                        "name": "nombre",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with the latest quote",
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Cotizacion"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/cryptocurrencies/latest": {
+            "get": {
+                "description": "Retrieves the most recent quotation for a cryptocurrency identified by its name.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Retrieve the latest quotation for a given cryptocurrency name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cryptocurrency name",
+                        "name": "nombre",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response with the latest quotation",
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Cotizacion"
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "error\": \"Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cryptocurrencies/{id}": {
+            "get": {
+                "description": "Retrieve a cryptocurrency by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Get cryptocurrency by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Cryptocurrency ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Error al obtener la criptomoneda",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update the details of a cryptocurrency by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Update cryptocurrency by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Cryptocurrency ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Cryptocurrency Data",
+                        "name": "cryptocurrency",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Successful response with a message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios": {
+            "post": {
+                "description": "Create a new user along with their favorite cryptocurrencies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create a new user",
+                "parameters": [
+                    {
+                        "description": "User and Favorite Cryptocurrencies",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.UsuarioRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Usuario creado exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios/{id}": {
+            "get": {
+                "description": "Get the details of a user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Find user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Usuario"
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "message\": \"Usuario no encontrado",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update the details of an existing user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update a user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User details to update",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Usuario"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Usuario actualizado exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Partially update the details of an existing user by their ID. This can include updating their favorite cryptocurrencies.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Partially update a user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User details to update, including favorite cryptocurrencies",
+                        "name": "updates",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Usuario actualizado exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios/{id}/cotizaciones": {
+            "get": {
+                "description": "Find all cryptocurrencies by filter for a specific user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cryptocurrencies"
+                ],
+                "summary": "Find all cryptocurrencies by filter",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Nombre",
+                        "name": "nombre",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "Minimum Cotizacion",
+                        "name": "min_cotizacion",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "Maximum Cotizacion",
+                        "name": "max_cotizacion",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start Date in RFC3339 format",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date in RFC3339 format",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Size",
+                        "name": "page_size",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Number",
+                        "name": "page_number",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with summary and data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios/{id}/monedas": {
+            "get": {
+                "description": "Get the list of favorite cryptocurrencies for a user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Find favorite cryptocurrencies by user ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.CriptoMoneda"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios/{id}/monedasFavoritas": {
+            "put": {
+                "description": "Add a favorite cryptocurrency to a user's list by their ID and the cryptocurrency's name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Add favorite cryptocurrency to user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cryptocurrency Name",
+                        "name": "nombre",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\": \"Moneda favorita guardada exitosamente",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\": \"ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\": \"Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "gin.H": {
+            "type": "object",
+            "additionalProperties": {}
+        },
+        "primerProjecto_internal_entities_criptomonedas.Cotizacion": {
+            "description": "Estructura que define una cotización de criptomoneda.",
+            "type": "object",
+            "properties": {
+                "cotizacion": {
+                    "description": "Cotizacion es el valor de la criptomoneda en un momento específico.\n@example 50000.00",
+                    "type": "number"
+                },
+                "cripto_id": {
+                    "description": "CriptoMoneda_ID es el identificador de la criptomoneda asociada.\n@example 1",
+                    "type": "integer"
+                },
+                "fecha": {
+                    "description": "Fecha es la fecha y hora en que se registró la cotización.\n@example 2024-07-29T12:00:00Z",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID es el identificador único de la cotización.\n@example 123",
+                    "type": "integer"
+                },
+                "manual": {
+                    "description": "Manual indica si la cotización fue ingresada manualmente.\n@example true",
+                    "type": "boolean"
+                },
+                "usuario_id": {
+                    "description": "UsuarioId es el identificador del usuario que ingresó la cotización.\n@example 42",
+                    "type": "integer"
+                }
+            }
+        },
+        "primerProjecto_internal_entities_criptomonedas.CriptoMoneda": {
+            "description": "Estructura que define una criptomoneda.",
+            "type": "object",
+            "properties": {
+                "codigo": {
+                    "description": "Codigo es el código de la criptomoneda.\n@example BTC",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID es el identificador único de la criptomoneda.\n@example 1",
+                    "type": "integer"
+                },
+                "nombre": {
+                    "description": "Nombre es el nombre de la criptomoneda.\n@example Bitcoin",
+                    "type": "string"
+                }
+            }
+        },
+        "primerProjecto_internal_entities_criptomonedas.TipoDocumento": {
+            "type": "string",
+            "enum": [
+                "DNI",
+                "pasaporte",
+                "cedula"
+            ],
+            "x-enum-varnames": [
+                "DNI",
+                "Pasaporte",
+                "Cedula"
+            ]
+        },
+        "primerProjecto_internal_entities_criptomonedas.Usuario": {
+            "description": "Estructura que define a un usuario del sistema.",
+            "type": "object",
+            "properties": {
+                "apellido": {
+                    "description": "Apellidos son los apellidos del usuario.\n@example Perez",
+                    "type": "string"
+                },
+                "codigoUsuario": {
+                    "description": "CodigoUsuario es el código de usuario.\n@example JP1990",
+                    "type": "string"
+                },
+                "email": {
+                    "description": "Email es el correo electrónico del usuario.\n@example juan.perez@example.com",
+                    "type": "string"
+                },
+                "esta_activo": {
+                    "description": "Esta_activo indica si el usuario está activo.\n@example true",
+                    "type": "boolean"
+                },
+                "fecha_Nacimiento": {
+                    "description": "Fecha_Nacimiento es la fecha de nacimiento del usuario.\n@example 1990-01-01T00:00:00Z",
+                    "type": "string"
+                },
+                "fecha_registro": {
+                    "description": "Fecha_registro es la fecha en que se registró el usuario.\n@example 2024-07-29T12:00:00Z",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID es el identificador único del usuario.\n@example 1",
+                    "type": "integer"
+                },
+                "nombre": {
+                    "description": "Nombre es el nombre del usuario.\n@example Juan",
+                    "type": "string"
+                },
+                "tipoDocumento": {
+                    "description": "TipoDocumento es el tipo de documento del usuario.\n@example DNI",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.TipoDocumento"
+                        }
+                    ]
+                }
+            }
+        },
+        "primerProjecto_internal_entities_criptomonedas.UsuarioRequest": {
+            "description": "Estructura de la solicitud para crear un nuevo usuario con sus criptomonedas favoritas.",
+            "type": "object",
+            "properties": {
+                "monedasFavoritas": {
+                    "description": "MonedasFavoritas contiene una lista de IDs de las criptomonedas favoritas del usuario.\n@description Lista de IDs de las criptomonedas favoritas del usuario.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "usuario": {
+                    "description": "Usuario contiene la información del usuario.\n@description Información del usuario.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/primerProjecto_internal_entities_criptomonedas.Usuario"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}`
+
+// SwaggerInfo holds exported Swagger Info so clients can modify it
+var SwaggerInfo = &amp;swag.Spec{
+        Version:          "1.0",
+        Host:             "",
+        BasePath:         "",
+        Schemes:          []string{},
+        Title:            "Cripto Api",
+        Description:      "app para cotizaciones de criptos",
+        InfoInstanceName: "swagger",
+        SwaggerTemplate:  docTemplate,
+        LeftDelim:        "{{",
+        RightDelim:       "}}",
+}
+
+func init() <span class="cov0" title="0">{
+        swag.Register(SwaggerInfo.InstanceName(), SwaggerInfo)
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package controllers
+
+import (
+        "log"
+        "net/http"
+        "primerProjecto/internal/entities/criptomonedas"
+        "strconv"
+        "time"
+
+        "github.com/gin-gonic/gin"
+)
+
+// @Summary Save a quotation
+// @Description Save a new quotation
+// @Tags cryptocurrencies
+// @Accept json
+// @Produce json
+// @Param cotizacion body criptomonedas.Cotizacion true "Cotizacion to be saved"
+// @Success 200 {object} gin.H "Successful response with a message"
+// @Failure 400 {object} gin.H "Bad Request"
+// @Failure 500 {object} gin.H "Internal Server Error"
+// @Router /cotizaciones [post]
+func (c *CryptoController) RegistrarCotizacion(ctx *gin.Context) <span class="cov0" title="0">{
+        var cotizacion criptomonedas.Cotizacion
+        err := ctx.ShouldBindJSON(&amp;cotizacion)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "Datos de moneda inválidos"})
+                return
+        }</span>
+        <span class="cov0" title="0">err = c.serv.SaveCotizacion(cotizacion)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al registrar la cotizacion"})
+                log.Printf("Error al registrar la cotizacion: %s", err)
+                return
+        }</span>
+        <span class="cov0" title="0">ctx.JSON(http.StatusOK, gin.H{"message": "cotizacion registrada correctamente"})</span>
+}
+
+func (c *CryptoController) FindAllByFilter(ctx *gin.Context) <span class="cov0" title="0">{
+        var filter criptomonedas.CriptoMonedaFilter
+
+        if nombre := ctx.Query("nombre"); nombre != "" </span><span class="cov0" title="0">{
+                filter.Nombre = &amp;nombre
+        }</span>
+        <span class="cov0" title="0">if minCotizacion := ctx.Query("min_cotizacion"); minCotizacion != "" </span><span class="cov0" title="0">{
+                min, err := strconv.ParseFloat(minCotizacion, 64)
+                if err == nil </span><span class="cov0" title="0">{
+                        filter.MinCotizacion = &amp;min
+                }</span>
+        }
+        <span class="cov0" title="0">if maxCotizacion := ctx.Query("max_cotizacion"); maxCotizacion != "" </span><span class="cov0" title="0">{
+                max, err := strconv.ParseFloat(maxCotizacion, 64)
+                if err == nil </span><span class="cov0" title="0">{
+                        filter.MaxCotizacion = &amp;max
+                }</span>
+        }
+        <span class="cov0" title="0">if startDate := ctx.Query("start_date"); startDate != "" </span><span class="cov0" title="0">{
+                start, err := time.Parse(time.RFC3339, startDate)
+                if err == nil </span><span class="cov0" title="0">{
+                        filter.StartDate = &amp;start
+                }</span>
+        }
+        <span class="cov0" title="0">if endDate := ctx.Query("end_date"); endDate != "" </span><span class="cov0" title="0">{
+                end, err := time.Parse(time.RFC3339, endDate)
+                if err == nil </span><span class="cov0" title="0">{
+                        filter.EndDate = &amp;end
+                }</span>
+        }
+
+        <span class="cov0" title="0">pageSize, err := strconv.Atoi(ctx.Query("page_size"))
+        if err != nil || pageSize &lt;= 0 </span><span class="cov0" title="0">{
+                pageSize = 10 // Default page size
+        }</span>
+        <span class="cov0" title="0">filter.PageSize = pageSize
+
+        pageNumber, err := strconv.Atoi(ctx.Query("page_number"))
+        if err != nil || pageNumber &lt;= 0 </span><span class="cov0" title="0">{
+                pageNumber = 1 // Default page number
+        }</span>
+        <span class="cov0" title="0">filter.PageNumber = pageNumber
+
+        monedas, summary, err := c.serv.FindAllByFilter(filter)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al obtener las criptomonedas"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">ctx.JSON(http.StatusOK, gin.H{
+                "summary": summary,
+                "data":    monedas,
+        })</span>
+}
+
+// @Summary Get latest quote by cryptocurrency name
+// @Description Get the latest quote for a given cryptocurrency name
+// @Tags cryptocurrencies
+// @Accept json
+// @Produce json
+// @Param nombre path string true "Cryptocurrency name"
+// @Success 200 {object} criptomonedas.Cotizacion "Successful response with the latest quote"
+// @Failure 500 {object} gin.H "Internal Server Error"
+// @Router /cryptocurrencies/lastcotization/{nombre} [get]
+func (c CryptoController) FindUltimaCotizacion(ctx *gin.Context) <span class="cov0" title="0">{
+        nombre := ctx.Param("nombre")
+
+        Cotizacion, err := c.serv.FindUltimaCotizacion(nombre)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al obtener la criptomoneda"})
+                log.Printf("Error al obtener la criptomoneda: %s", err)
+                return
+        }</span>
+        <span class="cov0" title="0">ctx.JSON(http.StatusOK, Cotizacion)</span>
+}
+
+func (c CryptoController) SaveCotizacionExterna(ctx *gin.Context) <span class="cov0" title="0">{
+        monedaNombre := ctx.Query("nombre")
+        api := ctx.Query("api")
+
+        err := c.serv.GuardarCotizacionExterna(monedaNombre, api)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al registrar la cotizacion"})
+                log.Printf("Error al registrar la cotizacion: %s", err)
+                return
+        }</span>
+        <span class="cov0" title="0">ctx.JSON(http.StatusOK, gin.H{"message": "cotizacion guardada correctamente"})</span>
+}
+
+// @Summary Find all cryptocurrencies by filter
+// @Description Find all cryptocurrencies by filter for a specific user
+// @Tags cryptocurrencies
+// @Accept  json
+// @Produce  json
+// @Param id path int true "User ID"
+// @Param nombre query string false "Nombre"
+// @Param min_cotizacion query number false "Minimum Cotizacion"
+// @Param max_cotizacion query number false "Maximum Cotizacion"
+// @Param start_date query string false "Start Date in RFC3339 format"
+// @Param end_date query string false "End Date in RFC3339 format"
+// @Param page_size query int true "Page Size"
+// @Param page_number query int true "Page Number"
+// @Success 200 {object} map[string]interface{} "Successful response with summary and data"
+// @Router /usuarios/{id}/cotizaciones [get]
+func (c *CryptoController) FindAllByFilterUsuario(ctx *gin.Context) <span class="cov0" title="0">{
+        // Obtener el ID del usuario desde el parámetro de la URL
+        usuarioId, err := strconv.Atoi(ctx.Param("id"))
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID de usuario inválido"})
+
+                return
+        }</span>
+
+        // Crear y poblar el filtro
+        <span class="cov0" title="0">var filter criptomonedas.CriptoMonedaFilter
+
+        if nombre := ctx.Query("nombre"); nombre != "" </span><span class="cov0" title="0">{
+                filter.Nombre = &amp;nombre
+        }</span>
+        <span class="cov0" title="0">if minCotizacion := ctx.Query("min_cotizacion"); minCotizacion != "" </span><span class="cov0" title="0">{
+                min, err := strconv.ParseFloat(minCotizacion, 64)
+                if err == nil </span><span class="cov0" title="0">{
+                        filter.MinCotizacion = &amp;min
+                }</span>
+        }
+        <span class="cov0" title="0">if maxCotizacion := ctx.Query("max_cotizacion"); maxCotizacion != "" </span><span class="cov0" title="0">{
+                max, err := strconv.ParseFloat(maxCotizacion, 64)
+                if err == nil </span><span class="cov0" title="0">{
+                        filter.MaxCotizacion = &amp;max
+                }</span>
+        }
+        <span class="cov0" title="0">if startDate := ctx.Query("start_date"); startDate != "" </span><span class="cov0" title="0">{
+                start, err := time.Parse(time.RFC3339, startDate)
+                if err == nil </span><span class="cov0" title="0">{
+                        filter.StartDate = &amp;start
+                }</span>
+        }
+        <span class="cov0" title="0">if endDate := ctx.Query("end_date"); endDate != "" </span><span class="cov0" title="0">{
+                end, err := time.Parse(time.RFC3339, endDate)
+                if err == nil </span><span class="cov0" title="0">{
+                        filter.EndDate = &amp;end
+                }</span>
+        }
+
+        <span class="cov0" title="0">pageSize, err := strconv.Atoi(ctx.Query("page_size"))
+        if err != nil || pageSize &lt;= 0 </span><span class="cov0" title="0">{
+                pageSize = 10 // Default page size
+        }</span>
+        <span class="cov0" title="0">filter.PageSize = pageSize
+
+        pageNumber, err := strconv.Atoi(ctx.Query("page_number"))
+        if err != nil || pageNumber &lt;= 0 </span><span class="cov0" title="0">{
+                pageNumber = 1 // Default page number
+        }</span>
+        <span class="cov0" title="0">filter.PageNumber = pageNumber
+
+        // Llamar al servicio con el filtro y el ID del usuario
+        cotizaciones, summary, err := c.serv.FindAllByFilterForUser(filter, usuarioId)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al obtener las criptomonedas"})
+                log.Println("Error al obtener las criptomonedas:", err)
+                return
+        }</span>
+
+        // Enviar la respuesta
+        <span class="cov0" title="0">ctx.JSON(http.StatusOK, gin.H{
+                "summary": summary,
+                "data":    cotizaciones,
+        })</span>
+}
+
+
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package controllers
+
+import (
+        "log"
+        "net/http"
+        "primerProjecto/internal/entities/criptomonedas"
+        "primerProjecto/internal/services"
+        "strconv"
+
+        "github.com/gin-gonic/gin"
+)
+
+type CryptoController struct {
+        serv *services.CryptoService
+}
+
+func NewCryptoController(service *services.CryptoService) *CryptoController <span class="cov0" title="0">{
+        return &amp;CryptoController{serv: service}
+}</span>
+
+func (c *CryptoController) FindAll(ctx *gin.Context) <span class="cov0" title="0">{
+        criptomonedas, err := c.serv.FindAll()
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al obtener las criptomonedas"})
+                log.Printf("Error al obtener las criptomonedas: %s", err)
+                return
+        }</span>
+        <span class="cov0" title="0">ctx.JSON(http.StatusOK, criptomonedas)</span>
+}
+
+func (c *CryptoController) RegistrarCriptoMoneda(ctx *gin.Context) <span class="cov0" title="0">{
+        var moneda criptomonedas.CriptoMoneda
+        err := ctx.ShouldBindJSON(&amp;moneda)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "Datos de moneda inválidos"})
+                return
+        }</span>
+        <span class="cov0" title="0">err = c.serv.SaveMoneda(moneda)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al registrar la moneda"})
+                log.Printf("Error al registrar la moneda: %s", err)
+                return
+        }</span>
+        <span class="cov0" title="0">ctx.JSON(http.StatusOK, gin.H{"message": "Moneda registrada correctamente"})</span>
+}
+
+// @Summary Get cryptocurrency by ID
+// @Description Retrieve a cryptocurrency by its ID
+// @Tags cryptocurrencies
+// @Accept json
+// @Produce json
+// @Param id path int true "Cryptocurrency ID"
+// @Success 200 {object} criptomonedas.CriptoMoneda
+// @Failure 400 {object} map[string]string "error": "ID inválido"
+// @Failure 500 {object} map[string]string "error": "Error al obtener la criptomoneda"
+// @Router /cryptocurrencies/{id} [get]
+func (c *CryptoController) FindMonedaByID(ctx *gin.Context) <span class="cov0" title="0">{
+        idStr := ctx.Param("id")
+        id, err := strconv.Atoi(idStr)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+                return
+        }</span>
+        <span class="cov0" title="0">criptoMoneda, err := c.serv.FindMonedaByID(id)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al obtener la criptomoneda"})
+                log.Printf("Error al obtener la criptomoneda: %s", err)
+                return
+        }</span>
+        <span class="cov0" title="0">ctx.JSON(http.StatusOK, criptoMoneda)</span>
+}
+
+// @Summary Update cryptocurrency by ID
+// @Description Update the details of a cryptocurrency by its ID
+// @Tags cryptocurrencies
+// @Accept json
+// @Produce json
+// @Param id path int true "Cryptocurrency ID"
+// @Param cryptocurrency body criptomonedas.CriptoMoneda true "Cryptocurrency Data"
+// @Success 200 {object} map[string]string "message": "Successful response with a message"
+// @Failure 400 {object} map[string]string "error": "Bad Request"
+// @Failure 500 {object} map[string]string "error": "Internal Server Error"
+// @Router /cryptocurrencies/{id} [put]
+func (c *CryptoController) HandleUpdateCryptoByID(ctx *gin.Context) <span class="cov0" title="0">{
+        idStr := ctx.Param("id")
+        id, err := strconv.Atoi(idStr)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+                return
+        }</span>
+        <span class="cov0" title="0">var moneda criptomonedas.CriptoMoneda
+        err = ctx.ShouldBindJSON(&amp;moneda)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "Datos de moneda inválidos"})
+                return
+        }</span>
+        <span class="cov0" title="0">err = c.serv.UpdateMoneda(id, moneda)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar la moneda"})
+                log.Printf("Error al actualizar la moneda: %s", err)
+                return
+        }</span>
+        <span class="cov0" title="0">ctx.JSON(http.StatusOK, gin.H{"message": "Moneda actualizada correctamente"})</span>
+}
+
+func (c *CryptoController) FindMondaByNombre(ctx *gin.Context) <span class="cov0" title="0">{
+        nombre := ctx.Param("nombre")
+        moneda, err := c.serv.FindCriptoByNombre(nombre)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al buscar moneda"})
+                log.Printf("Error al buscar la moneda: %s", err)
+                return
+        }</span>
+        <span class="cov0" title="0">ctx.JSON(http.StatusOK, moneda)</span>
+}
+
+func (c CryptoController) SaveMonedaConCotizacion(ctx *gin.Context) <span class="cov0" title="0">{
+        monedaNombre := ctx.Query("nombre")
+        api := ctx.Query("api")
+
+        err := c.serv.SaveMonedaConCotizacion(monedaNombre, api)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al registrar la moneda"})
+                log.Printf("Error al registrar la moneda: %s", err)
+                return
+        }</span>
+        <span class="cov0" title="0">ctx.JSON(http.StatusOK, gin.H{"message": "Moneda registrada correctamente"})</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package controllers
+
+import (
+        "net/http"
+        "primerProjecto/internal/entities/criptomonedas"
+        "primerProjecto/internal/services"
+        "strconv"
+        "time"
+
+        "github.com/gin-gonic/gin"
+)
+
+type UsuarioHandler struct {
+        serv *services.UsuarioService
+}
+
+func NewUsuarioHandler(service *services.UsuarioService) *UsuarioHandler <span class="cov0" title="0">{
+        return &amp;UsuarioHandler{serv: service}
+}</span>
+
+// CreateUsuario crea un nuevo usuario junto con sus criptomonedas favoritas.
+// @Summary Create a new user
+// @Description Create a new user along with their favorite cryptocurrencies
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user body criptomonedas.UsuarioRequest true "User and Favorite Cryptocurrencies"
+// @Success 200 {object} map[string]string "message": "Usuario creado exitosamente"
+// @Failure 400 {object} map[string]string "error": "Bad Request"
+// @Failure 500 {object} map[string]string "error": "Internal Server Error"
+// @Router /usuarios [post]
+func (h *UsuarioHandler) CreateUsuario(c *gin.Context) <span class="cov0" title="0">{
+        var request criptomonedas.UsuarioRequest
+
+        if err := c.ShouldBindJSON(&amp;request); err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+                return
+        }</span>
+
+        <span class="cov0" title="0">if !esMayorDeEdad(request.Usuario.Fecha_Nacimiento) </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": "El usuario debe ser mayor de edad"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">err := h.serv.CreateUsuario(request.Usuario, request.MonedasFavoritas)
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+                return
+        }</span>
+
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{"message": "Usuario creado exitosamente"})</span>
+}
+
+func esMayorDeEdad(fechaNacimiento time.Time) bool <span class="cov0" title="0">{
+        hoy := time.Now()
+        edad := hoy.Year() - fechaNacimiento.Year()
+        if hoy.YearDay() &lt; fechaNacimiento.YearDay() </span><span class="cov0" title="0">{
+                edad--
+        }</span>
+        <span class="cov0" title="0">return edad &gt;= 18</span>
+}
+
+// @Summary Update a user by ID
+// @Description Update the details of an existing user by their ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param user body criptomonedas.Usuario true "User details to update"
+// @Success 200 {object} map[string]string "message": "Usuario actualizado exitosamente"
+// @Failure 400 {object} map[string]string "error": "ID inválido"
+// @Failure 400 {object} map[string]string "error": "Bad Request"
+// @Failure 500 {object} map[string]string "error": "Internal Server Error"
+// @Router /usuarios/{id} [put]
+func (h *UsuarioHandler) UpdateUsuarioByID(c *gin.Context) <span class="cov0" title="0">{
+        id, err := strconv.Atoi(c.Param("id"))
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">var usuario criptomonedas.Usuario
+        if err := c.ShouldBindJSON(&amp;usuario); err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+                return
+        }</span>
+
+        <span class="cov0" title="0">err = h.serv.UpdateUsuarioById(id, usuario)
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+                return
+        }</span>
+
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{"message": "Usuario actualizado exitosamente"})</span>
+}
+
+func (h *UsuarioHandler) UpsertUsuario(c *gin.Context) <span class="cov0" title="0">{
+        var request criptomonedas.UsuarioRequest
+        if err := c.ShouldBindJSON(&amp;request); err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+                return
+        }</span>
+
+        <span class="cov0" title="0">if request.Usuario.Id != 0 </span><span class="cov0" title="0">{
+                if err := h.serv.UpdateUsuarioById(request.Usuario.Id, request.Usuario); err != nil </span><span class="cov0" title="0">{
+                        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+                        return
+                }</span>
+        } else<span class="cov0" title="0"> {
+                if err := h.serv.CreateUsuario(request.Usuario, request.MonedasFavoritas); err != nil </span><span class="cov0" title="0">{
+                        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+                        return
+                }</span>
+                <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{"message": "Usuario upserteado exitosamente"})
+                return</span>
+        }
+
+        <span class="cov0" title="0">if err := h.serv.UpdateMonedasDeInteres(request.Usuario.Id, request.MonedasFavoritas); err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+                return
+        }</span>
+
+        /*for _, moneda := range request.MonedasFavoritas {
+                if err := h.serv.GuardarMonedaFavorita(moneda, request.Usuario.Id); err != nil {
+                        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+                        return
+                }
+        }*/
+
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{"message": "Usuario upserteado exitosamente"})</span>
+}
+
+// @Summary Find user by ID
+// @Description Get the details of a user by their ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} criptomonedas.Usuario
+// @Failure 400 {object} map[string]string "error": "ID inválido"
+// @Failure 404 {object} map[string]string "message": "Usuario no encontrado"
+// @Failure 500 {object} map[string]string "error": "Internal Server Error"
+// @Router /usuarios/{id} [get]
+func (h *UsuarioHandler) FindUsuarioByID(c *gin.Context) <span class="cov0" title="0">{
+        id, err := strconv.Atoi(c.Param("id"))
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">usuario, err := h.serv.FindUsuarioByID(id)
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+                return
+        }</span>
+        <span class="cov0" title="0">if usuario == nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusNotFound, gin.H{"message": "Usuario no encontrado"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">c.JSON(http.StatusOK, usuario)</span>
+}
+
+// @Summary Find favorite cryptocurrencies by user ID
+// @Description Get the list of favorite cryptocurrencies for a user by their ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {array} criptomonedas.CriptoMoneda
+// @Failure 400 {object} map[string]string "error": "ID inválido"
+// @Failure 500 {object} map[string]string "error": "Internal Server Error"
+// @Router /usuarios/{id}/monedas [get]
+func (h *UsuarioHandler) FindMonedasByUsuarioID(c *gin.Context) <span class="cov0" title="0">{
+        id, err := strconv.Atoi(c.Param("id"))
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">monedas, err := h.serv.FindMonedasByUsuarioID(id)
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+                return
+        }</span>
+
+        <span class="cov0" title="0">c.JSON(http.StatusOK, monedas)</span>
+}
+
+// @Summary Partially update a user by ID
+// @Description Partially update the details of an existing user by their ID. This can include updating their favorite cryptocurrencies.
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param updates body map[string]interface{} true "User details to update, including favorite cryptocurrencies"
+// @Success 200 {object} map[string]string "message": "Usuario actualizado exitosamente"
+// @Failure 400 {object} map[string]string "error": "Bad Request"
+// @Failure 500 {object} map[string]string "error": "Internal Server Error"
+// @Router /usuarios/{id} [patch]
+func (h *UsuarioHandler) PatchUsuarioByID(c *gin.Context) <span class="cov0" title="0">{
+        id, err := strconv.Atoi(c.Param("id"))
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">var updates map[string]interface{}
+        if err := c.ShouldBindJSON(&amp;updates); err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+                return
+        }</span>
+
+        // Extraer las monedas de interés si están presentes en la solicitud
+        <span class="cov0" title="0">var monedas []string
+        eliminarMonedas := false
+
+        if m, exists := updates["monedas"]; exists </span><span class="cov0" title="0">{
+                if m == nil </span><span class="cov0" title="0">{
+                        // Eliminar todas las monedas de interés
+                        eliminarMonedas = true
+                }</span> else<span class="cov0" title="0"> {
+                        monedasInterface, ok := m.([]interface{})
+                        if !ok </span><span class="cov0" title="0">{
+                                c.JSON(http.StatusBadRequest, gin.H{"error": "Formato inválido para monedas"})
+                                return
+                        }</span>
+                        <span class="cov0" title="0">for _, mi := range monedasInterface </span><span class="cov0" title="0">{
+                                monedaCodigo, ok := mi.(string) // JSON numbers are float64
+                                if !ok </span><span class="cov0" title="0">{
+                                        c.JSON(http.StatusBadRequest, gin.H{"error": "ID de moneda inválido"})
+                                        return
+                                }</span>
+                                <span class="cov0" title="0">monedas = append(monedas, string(monedaCodigo))</span>
+                        }
+                }
+                <span class="cov0" title="0">delete(updates, "monedas")</span>
+        }
+
+        <span class="cov0" title="0">err = h.serv.PatchUsuarioByID(id, updates, monedas, eliminarMonedas)
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+                return
+        }</span>
+
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{"message": "Usuario actualizado exitosamente"})</span>
+}
+
+// @Summary Add favorite cryptocurrency to user
+// @Description Add a favorite cryptocurrency to a user's list by their ID and the cryptocurrency's name
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID" // Utiliza `path` en lugar de `query` para parámetros en la ruta
+// @Param nombre query string true "Cryptocurrency Name"
+// @Success 200 {object} map[string]string "message": "Moneda favorita guardada exitosamente"
+// @Failure 400 {object} map[string]string "error": "ID inválido"
+// @Failure 500 {object} map[string]string "error": "Internal Server Error"
+// @Router /usuarios/{id}/monedasFavoritas [put]
+func (c *UsuarioHandler) GuardarMonedaFavorita(ctx *gin.Context) <span class="cov0" title="0">{
+        monedaNombre := ctx.Query("nombre")
+        usuarioId, err := strconv.Atoi(ctx.Query("id"))
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">c.serv.GuardarMonedaFavorita(monedaNombre, usuarioId)</span>
+
+}
+
+// @Summary Register manual cryptocurrency quote
+// @Description Register a manual quote for a cryptocurrency for a specific user by their ID
+// @Tags quotes
+// @Accept json
+// @Produce json
+// @Param id query int true "User ID"
+// @Param cotizacion body criptomonedas.Cotizacion true "Cryptocurrency Quote"
+// @Success 200 {object} map[string]string "message": "Cotización registrada exitosamente"
+// @Failure 400 {object} map[string]string "error": "ID inválido" or "Datos de moneda inválidos"
+// @Failure 500 {object} map[string]string "error": "Internal Server Error"
+// @Router /cotization/manual [post]
+func (c *UsuarioHandler) RegistrarCotizacionManual(ctx *gin.Context) <span class="cov0" title="0">{
+
+        var cotizacion criptomonedas.Cotizacion
+        err := ctx.ShouldBindJSON(&amp;cotizacion)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "Datos de moneda inválidos"})
+                return
+        }</span>
+        <span class="cov0" title="0">usuarioId, err := strconv.Atoi(ctx.Query("id"))
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+                return
+        }</span>
+        <span class="cov0" title="0">c.serv.GuardarCotizacionManual(usuarioId, cotizacion)
+
+        ctx.JSON(http.StatusOK, gin.H{
+                "message": "Cotización manual registrada exitosamente",
+        })</span>
+
+}
+
+// @Summary Update manual cryptocurrency quote
+// @Description Update a manual quote for a cryptocurrency for a specific user by their ID
+// @Tags quotes
+// @Accept json
+// @Produce json
+// @Param usuarioId path int true "User ID"
+// @Param cotizacionId path int true "Quote ID"
+// @Param cotizacion body criptomonedas.Cotizacion true "Cryptocurrency Quote"
+// @Success 200 {object} map[string]string "message": "Cotización actualizada exitosamente"
+// @Failure 400 {object} map[string]string "error": "ID inválido" or "Datos de cotización inválidos"
+// @Failure 500 {object} map[string]string "error": "Internal Server Error"
+// @Router /cotizacion/manual/{usuarioId}/{cotizacionId} [put]
+func (c *UsuarioHandler) ActualizarCotizacionManual(ctx *gin.Context) <span class="cov0" title="0">{
+        var cotizacion criptomonedas.Cotizacion
+        err := ctx.ShouldBindJSON(&amp;cotizacion)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "Datos de cotización inválidos"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">usuarioId, err := strconv.Atoi(ctx.Param("usuarioId"))
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID de usuario inválido"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">cotizacionId, err := strconv.Atoi(ctx.Param("cotizacionId"))
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID de cotización inválido"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">cotizacion.Id = cotizacionId // Asegúrate de asignar el ID de la cotización
+        _, err = c.serv.ActualizarCotizacionManual(usuarioId, cotizacion)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar cotización"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">ctx.JSON(http.StatusOK, gin.H{"message": "Cotización actualizada exitosamente"})</span>
+}
+
+// @Summary Delete manual cryptocurrency quote
+// @Description Delete a manual quote for a cryptocurrency for a specific user by their ID
+// @Tags quotes
+// @Accept json
+// @Produce json
+// @Param id path int true "Quote ID"
+// @Success 200 {object} map[string]string "message": "Cotización eliminada exitosamente"
+// @Failure 400 {object} map[string]string "error": "ID inválido"
+// @Failure 500 {object} map[string]string "error": "Internal Server Error"
+// @Router /cotizacion/manual/{id} [delete]
+func (c *UsuarioHandler) BorrarCotizacionManual(ctx *gin.Context) <span class="cov0" title="0">{
+
+        idStr := ctx.Param("id")
+        id, err := strconv.Atoi(idStr)
+        if err != nil </span><span class="cov0" title="0">{
+                ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+                return
+        }</span>
+        <span class="cov0" title="0">c.serv.BorrarCotizacionManual(id)
+
+        ctx.JSON(http.StatusOK, gin.H{
+                "message": "Cotización manual borrada exitosamente",
+        })</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package cotizadores
+
+//go:generate echo $GOPACKAGE/$GOFILE
+//go:generate mockgen -source=./$GOFILE -destination=./mock/$GOFILE -package mock
+
+import (
+        "fmt"
+        criptomonedas "primerProjecto/internal/entities/criptomonedas"
+)
+
+type Cotizador interface {
+        GetCotizacionExterna(moneda, codigo, fiat string) (criptomonedas.Cotizacion, error)
+}
+
+var CotizadoresMap = map[string]Cotizador{
+        "coinpaprika": &amp;CoinPaprikaCotizador{},
+        "criptoya":    &amp;CryptoYaCotizador{},
+        // Agrega otros cotizadores aquí, como Cryptoya.
+}
+
+func GetCotizador(name string) (Cotizador, error) <span class="cov8" title="1">{
+        cotizador, exists := CotizadoresMap[name]
+        if !exists </span><span class="cov8" title="1">{
+                return nil, fmt.Errorf("cotizador %s no soportado", name)
+        }</span>
+        <span class="cov0" title="0">return cotizador, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package cotizadores
+
+import (
+        "encoding/json"
+        "fmt"
+        "net/http"
+        criptomonedas "primerProjecto/internal/entities/criptomonedas"
+        "time"
+)
+
+type Exchange struct { //
+        Ask      float64 `json:"ask"`
+        TotalAsk float64 `json:"totalAsk"`
+        Bid      float64 `json:"bid"`
+        TotalBid float64 `json:"totalBid"`
+        Time     int64   `json:"time"`
+}
+
+type CryptoYaQueryResponse struct { //
+        SatoshiTango Exchange `json:"satoshitango"`
+        LetsBit      Exchange `json:"letsbit"`
+        BinanceP2P   Exchange `json:"binancep2p"`
+        FiWind       Exchange `json:"fiwind"`
+        TiendaCrypto Exchange `json:"tiendacrypto"`
+        Calypso      Exchange `json:"calypso"`
+        BanexCoin    Exchange `json:"banexcoin"`
+        BitsoAlpha   Exchange `json:"bitsoalpha"`
+        X4T          Exchange `json:"x4t"`
+}
+
+type CryptoYaCotizador struct{}
+
+func (s *CryptoYaCotizador) GetCotizacionExterna(moneda, codigo, fiat string) (criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+
+        volumen := 0.1
+        var cotizacion criptomonedas.Cotizacion
+
+        // Construir la URL del endpoint
+        url := fmt.Sprintf("https://criptoya.com/api/%s/%s/%.2f", codigo, fiat, volumen)
+
+        resp, err := http.Get(url)
+        if err != nil </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("error al realizar la solicitud HTTP: %v", err)
+        }</span>
+        <span class="cov0" title="0">defer resp.Body.Close()
+
+        if resp.StatusCode != http.StatusOK </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("error en la solicitud: %s", resp.Status)
+        }</span>
+
+        <span class="cov0" title="0">var apiResponse CryptoYaQueryResponse
+        if err := json.NewDecoder(resp.Body).Decode(&amp;apiResponse); err != nil </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("error al decodificar la respuesta JSON: %v", err)
+        }</span>
+
+        // usando el primer exchange
+        <span class="cov0" title="0">price := apiResponse.SatoshiTango.Ask
+
+        /* ESTO LO TIENE QUE HACER EL SERVICE AHORA.
+        // Buscar la criptomoneda por nombre
+        cripto, err := s.repo.FindCryptoByName(moneda)
+        if err != nil {
+                return cotizacion, err
+        }
+
+        if cripto == nil {
+                return cotizacion, fmt.Errorf("la criptomoneda %s no está registrada en la base de datos", moneda)
+        }
+        */
+        cotizacion = criptomonedas.Cotizacion{
+                Cotizacion: price,
+                Fecha:      time.Now(),
+        }
+
+        return cotizacion, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: ./cotizadores.go
+//
+// Generated by this command:
+//
+//        mockgen -source=./cotizadores.go -destination=./mock/cotizadores.go -package mock
+//
+
+// Package mock is a generated GoMock package.
+package mock
+
+import (
+        criptomonedas "primerProjecto/internal/entities/criptomonedas"
+        reflect "reflect"
+
+        gomock "go.uber.org/mock/gomock"
+)
+
+// MockCotizador is a mock of Cotizador interface.
+type MockCotizador struct {
+        ctrl     *gomock.Controller
+        recorder *MockCotizadorMockRecorder
+}
+
+// MockCotizadorMockRecorder is the mock recorder for MockCotizador.
+type MockCotizadorMockRecorder struct {
+        mock *MockCotizador
+}
+
+// NewMockCotizador creates a new mock instance.
+func NewMockCotizador(ctrl *gomock.Controller) *MockCotizador <span class="cov8" title="1">{
+        mock := &amp;MockCotizador{ctrl: ctrl}
+        mock.recorder = &amp;MockCotizadorMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockCotizador) EXPECT() *MockCotizadorMockRecorder <span class="cov8" title="1">{
+        return m.recorder
+}</span>
+
+// GetCotizacionExterna mocks base method.
+func (m *MockCotizador) GetCotizacionExterna(moneda, codigo, fiat string) (criptomonedas.Cotizacion, error) <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetCotizacionExterna", moneda, codigo, fiat)
+        ret0, _ := ret[0].(criptomonedas.Cotizacion)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetCotizacionExterna indicates an expected call of GetCotizacionExterna.
+func (mr *MockCotizadorMockRecorder) GetCotizacionExterna(moneda, codigo, fiat any) *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCotizacionExterna", reflect.TypeOf((*MockCotizador)(nil).GetCotizacionExterna), moneda, codigo, fiat)
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package cotizadores
+
+import (
+        "encoding/json"
+        "fmt"
+        "net/http"
+        criptomonedas "primerProjecto/internal/entities/criptomonedas"
+        "time"
+)
+
+type CoinPaprikaCotizador struct{}
+
+type CoinpaprikaResponse struct {
+        Name   string `json:"name"`
+        Quotes map[string]struct {
+                Price float64 `json:"price"`
+        } `json:"quotes"`
+}
+
+func (s *CoinPaprikaCotizador) GetCotizacionExterna(moneda, codigo, fiat string) (criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        // Paso 1: Buscar el ID de la criptomoneda en CoinPaprika
+        coinListURL := "https://api.coinpaprika.com/v1/coins"
+        var cotizacion criptomonedas.Cotizacion
+        resp, err := http.Get(coinListURL)
+        if err != nil </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("error al obtener la lista de monedas: %v", err)
+        }</span>
+        <span class="cov0" title="0">defer resp.Body.Close()
+
+        if resp.StatusCode != http.StatusOK </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("error en la solicitud de lista de monedas: %s", resp.Status)
+        }</span>
+
+        <span class="cov0" title="0">var coins []struct {
+                ID   string `json:"id"`
+                Name string `json:"name"`
+        }
+        if err := json.NewDecoder(resp.Body).Decode(&amp;coins); err != nil </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("error al decodificar la lista de monedas: %v", err)
+        }</span>
+
+        <span class="cov0" title="0">var coinID string
+        for _, coin := range coins </span><span class="cov0" title="0">{
+                if coin.Name == moneda </span><span class="cov0" title="0">{
+                        coinID = coin.ID
+                        break</span>
+                }
+        }
+
+        <span class="cov0" title="0">if coinID == "" </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("no se encontró la criptomoneda %s en CoinPaprika", moneda)
+        }</span>
+
+        // Paso 2: Usar el ID para obtener la cotización más reciente
+        <span class="cov0" title="0">tickerURL := fmt.Sprintf("https://api.coinpaprika.com/v1/tickers/%s", coinID)
+        resp, err = http.Get(tickerURL)
+        if err != nil </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("error al obtener la cotización: %v", err)
+        }</span>
+        <span class="cov0" title="0">defer resp.Body.Close()
+
+        if resp.StatusCode != http.StatusOK </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("error en la solicitud de cotización: %s", resp.Status)
+        }</span>
+
+        <span class="cov0" title="0">var result CoinpaprikaResponse
+        if err := json.NewDecoder(resp.Body).Decode(&amp;result); err != nil </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("error al decodificar la respuesta de cotización: %v", err)
+        }</span>
+
+        <span class="cov0" title="0">quote, ok := result.Quotes[fiat]
+        if !ok </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("no se encontró la cotización para la moneda fiat %s", fiat)
+        }</span>
+
+        /* ESTO LO TIENE QUE HACER EL SERVICE AHORA.
+        // Paso 3: Buscar la criptomoneda por nombre en tu base de datos
+        cripto, err := s.FindCryptoByName(moneda)
+        if err != nil {
+                return cotizacion, err
+        }
+
+        if cripto == nil {
+                return cotizacion, fmt.Errorf("la criptomoneda %s no está registrada en la base de datos", moneda)
+        }*/
+
+        <span class="cov0" title="0">cotizacion = criptomonedas.Cotizacion{ //service tiene que buscar el id de la cripto para esto
+                Cotizacion: quote.Price,
+                Fecha:      time.Now(),
+        }
+
+        return cotizacion, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package repositories
+
+//go:generate echo $GOPACKAGE/$GOFILE
+//go:generate mockgen -source=./$GOFILE -destination=./mock/$GOFILE -package mock
+
+import (
+        "database/sql"
+        "encoding/json"
+        "fmt"
+        "log"
+        "primerProjecto/internal/entities/criptomonedas"
+        "time"
+)
+
+func (r *MySQLCryptoRepository) SaveCotizacion(cripto criptomonedas.Cotizacion) error <span class="cov0" title="0">{
+        _, err := r.db.Exec("INSERT INTO cotizaciones (cripto_id, cotizacion, fecha) VALUES (?, ?, ?)", cripto.CriptoMoneda_ID, cripto.Cotizacion, cripto.Fecha)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al guardar cotizacion:", err)
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (r *MySQLCryptoRepository) FindByCotizacionID(id int) (*criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        query := `
+        SELECT c.id, c.cripto_id, c.cotizacion, c.fecha , c.manual , c.usuario_id
+        FROM cotizaciones c
+        WHERE c.id = ?
+`
+        row := r.db.QueryRow(query, id)
+        moneda := criptomonedas.Cotizacion{}
+        var fecha string
+
+        err := row.Scan(&amp;moneda.Id, &amp;moneda.CriptoMoneda_ID, &amp;moneda.Cotizacion, &amp;fecha, &amp;moneda.Manual, &amp;moneda.UsuarioId)
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        log.Printf("no se encontro moneda con id %d", id)
+                        return nil, err
+                }</span>
+        }
+        <span class="cov0" title="0">if fecha == "" </span><span class="cov0" title="0">{
+                log.Println("La fecha está vacía")
+                return &amp;moneda, nil
+        }</span>
+
+        // Convertir fecha a time.Time si es necesario
+        <span class="cov0" title="0">moneda.Fecha, err = time.Parse(time.RFC3339, fecha)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al convertir fecha:", err)
+        }</span>
+        <span class="cov0" title="0">return &amp;moneda, nil</span>
+}
+
+func (r *MySQLCryptoRepository) FindAllCotizaciones() ([]*criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        query := "SELECT id, cripto_id, cotizacion, fecha FROM cotizaciones"
+        rows, err := r.db.Query(query)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al ejecutar la consulta:", err)
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer rows.Close()
+
+        var cotizaciones []*criptomonedas.Cotizacion
+
+        for rows.Next() </span><span class="cov0" title="0">{
+                var cotizacion criptomonedas.Cotizacion
+                var fecha string
+
+                err := rows.Scan(&amp;cotizacion.Id, &amp;cotizacion.CriptoMoneda_ID, &amp;cotizacion.Cotizacion, &amp;fecha)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Println("Error al escanear fila:", err)
+                        continue</span>
+                }
+
+                // Convertir fecha a time.Time si es necesario
+                <span class="cov0" title="0">cotizacion.Fecha, err = time.Parse("2006-01-02 15:04:05", fecha)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Println("Error al convertir fecha:", err)
+                        continue</span>
+                }
+
+                <span class="cov0" title="0">cotizaciones = append(cotizaciones, &amp;cotizacion)</span>
+        }
+
+        <span class="cov0" title="0">if err := rows.Err(); err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al iterar sobre las filas:", err)
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return cotizaciones, nil</span>
+}
+
+func (r *MySQLCryptoRepository) UpdateCotizacion(id int, cotizacion criptomonedas.Cotizacion) error <span class="cov0" title="0">{
+        query := "UPDATE cotizaciones SET cotizacion = ?, fecha = ? WHERE id = ?"
+        _, err := r.db.Exec(query, cotizacion.Cotizacion, cotizacion.Fecha, id)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al actualizar la moneda:", err)
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (r *MySQLCryptoRepository) FindAllByFilter(filter criptomonedas.CriptoMonedaFilter) ([]criptomonedas.Cotizacion, criptomonedas.Summary, error) <span class="cov0" title="0">{
+        query := `
+        SELECT 
+            c.id, c.cotizacion, c.fecha, c.cripto_id 
+        FROM 
+            cotizaciones c
+        JOIN 
+            monedas cm ON c.cripto_id = cm.id 
+        WHERE 
+            1=1`
+        args := []interface{}{}
+
+        appliedFilters := make(map[string]interface{})
+
+        if filter.Nombre != nil </span><span class="cov0" title="0">{
+                query += " AND cm.nombre LIKE ?"
+                args = append(args, "%"+*filter.Nombre+"%")
+                appliedFilters["Nombre"] = *filter.Nombre
+        }</span>
+        <span class="cov0" title="0">if filter.MinCotizacion != nil </span><span class="cov0" title="0">{
+                query += " AND c.cotizacion &gt;= ?"
+                args = append(args, *filter.MinCotizacion)
+                appliedFilters["MinCotizacion"] = *filter.MinCotizacion
+        }</span>
+        <span class="cov0" title="0">if filter.MaxCotizacion != nil </span><span class="cov0" title="0">{
+                query += " AND c.cotizacion &lt;= ?"
+                args = append(args, *filter.MaxCotizacion)
+                appliedFilters["MaxCotizacion"] = *filter.MaxCotizacion
+        }</span>
+        <span class="cov0" title="0">if filter.StartDate != nil </span><span class="cov0" title="0">{
+                query += " AND c.fecha &gt;= ?"
+                args = append(args, *filter.StartDate)
+                appliedFilters["StartDate"] = *filter.StartDate
+        }</span>
+        <span class="cov0" title="0">if filter.EndDate != nil </span><span class="cov0" title="0">{
+                query += " AND c.fecha &lt;= ?"
+                args = append(args, *filter.EndDate)
+                appliedFilters["EndDate"] = *filter.EndDate
+        }</span>
+
+        // Add pagination
+        <span class="cov0" title="0">query += " LIMIT ? OFFSET ?"
+        args = append(args, filter.PageSize, filter.PageSize*(filter.PageNumber-1))
+
+        rows, err := r.db.Query(query, args...)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, criptomonedas.Summary{}, err
+        }</span>
+        <span class="cov0" title="0">defer rows.Close()
+
+        var cotizaciones []criptomonedas.Cotizacion
+        for rows.Next() </span><span class="cov0" title="0">{
+                var cotizacion criptomonedas.Cotizacion
+                var cripto criptomonedas.CriptoMoneda
+                var fechaString string
+                if err := rows.Scan(&amp;cotizacion.Id, &amp;cotizacion.Cotizacion, &amp;fechaString, &amp;cripto.Id); err != nil </span><span class="cov0" title="0">{
+                        return nil, criptomonedas.Summary{}, err
+                }</span>
+                <span class="cov0" title="0">cotizacion.Fecha, err = time.Parse("2006-01-02 15:04:05", fechaString)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Println("Error al convertir fecha:", err)
+                        continue</span>
+                }
+                //cotizacion.CriptoMoneda = cripto
+                <span class="cov0" title="0">cotizaciones = append(cotizaciones, cotizacion)</span>
+        }
+
+        // Calcular resumen
+        <span class="cov0" title="0">summary := criptomonedas.Summary{
+                TotalResults: len(cotizaciones),
+                //Filters:      appliedFilters,
+                PageNumber: filter.PageNumber,
+                PageSize:   filter.PageSize,
+        }
+
+        return cotizaciones, summary, nil</span>
+
+}
+
+// FindUltimaCotizacion retrieves the latest quotation for a given cryptocurrency name.
+// @Summary Retrieve the latest quotation for a given cryptocurrency name
+// @Description Retrieves the most recent quotation for a cryptocurrency identified by its name.
+// @Tags cryptocurrencies
+// @Accept json
+// @Produce json
+// @Param nombre query string true "Cryptocurrency name"
+// @Success 200 {object} criptomonedas.Cotizacion "Success response with the latest quotation"
+// @Failure 400 {object} map[string]string "error": "Bad Request"
+// @Failure 404 {object} map[string]string "error": "Not Found"
+// @Failure 500 {object} map[string]string "error": "Internal Server Error"
+// @Router /cryptocurrencies/latest [get]
+func (r *MySQLCryptoRepository) FindUltimaCotizacion(nombre string) (*criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        query := `
+                SELECT
+                c.id, c.cotizacion, c.fecha, c.cripto_id
+        FROM
+                cotizaciones c
+        JOIN
+                monedas cm ON c.cripto_id = cm.id
+        WHERE
+                cm.nombre = ?
+        ORDER BY
+                c.fecha DESC
+        LIMIT 1
+`
+
+        row := r.db.QueryRow(query, nombre)
+        cotizacion := criptomonedas.Cotizacion{}
+
+        var fechaString string
+        err := row.Scan(&amp;cotizacion.Id, &amp;cotizacion.Cotizacion, &amp;fechaString, &amp;cotizacion.CriptoMoneda_ID)
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        log.Printf("no se encontro moneda con nombre %s", nombre)
+                        return nil, err
+                }</span>
+                // Convertir fecha a time.Time
+                <span class="cov0" title="0">cotizacion.Fecha, err = time.Parse("2006-01-02 15:04:05", fechaString)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Println("Error al convertir fecha:", err)
+                }</span>
+        }
+        <span class="cov0" title="0">return &amp;cotizacion, nil</span>
+}
+
+func (r *MySQLCryptoRepository) FindAllByFilterForUser(filter criptomonedas.CriptoMonedaFilter, usuarioId int) ([]criptomonedas.Cotizacion, criptomonedas.Summary, error) <span class="cov0" title="0">{
+        query := `
+        SELECT 
+            c.id, c.cotizacion, c.fecha, c.cripto_id,
+            JSON_ARRAYAGG(c.cotizacion) AS cotizaciones_valores,
+                        JSON_ARRAYAGG(c.fecha) AS cotizaciones_fechas, 
+                        JSON_ARRAYAGG(cm.nombre) AS cripto_nombres  
+        FROM 
+            cotizaciones c
+        JOIN 
+            monedas cm ON c.cripto_id = cm.id 
+        JOIN
+            usuario_moneda um ON um.moneda_id = cm.id
+        WHERE 
+            um.usuario_id = ?`
+        args := []interface{}{usuarioId}
+
+        if filter.Nombre != nil </span><span class="cov0" title="0">{
+                query += " AND cm.nombre LIKE ?"
+                args = append(args, "%"+*filter.Nombre+"%")
+        }</span>
+        <span class="cov0" title="0">if filter.MinCotizacion != nil </span><span class="cov0" title="0">{
+                query += " AND c.cotizacion &gt;= ?"
+                args = append(args, *filter.MinCotizacion)
+        }</span>
+        <span class="cov0" title="0">if filter.MaxCotizacion != nil </span><span class="cov0" title="0">{
+                query += " AND c.cotizacion &lt;= ?"
+                args = append(args, *filter.MaxCotizacion)
+        }</span>
+        <span class="cov0" title="0">if filter.StartDate != nil </span><span class="cov0" title="0">{
+                query += " AND c.fecha &gt;= ?"
+                args = append(args, *filter.StartDate)
+        }</span>
+        <span class="cov0" title="0">if filter.EndDate != nil </span><span class="cov0" title="0">{
+                query += " AND c.fecha &lt;= ?"
+                args = append(args, *filter.EndDate)
+        }</span>
+
+        // Add pagination
+        <span class="cov0" title="0">query += " GROUP BY c.id, c.cotizacion, c.fecha, c.cripto_id"
+        query += " LIMIT ? OFFSET ?"
+        args = append(args, filter.PageSize, filter.PageSize*(filter.PageNumber-1))
+
+        log.Println("Consulta SQL:", query)
+        rows, err := r.db.Query(query, args...)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, criptomonedas.Summary{}, err
+        }</span>
+        <span class="cov0" title="0">defer rows.Close()
+
+        var cotizaciones []criptomonedas.Cotizacion
+        var summary criptomonedas.Summary
+        for rows.Next() </span><span class="cov0" title="0">{
+                var cotizacion criptomonedas.Cotizacion
+                var fechaString string
+                var cotizacionesValoresJSON, cotizacionesFechasJSON, criptoNombresJSON string
+
+                if err := rows.Scan(&amp;cotizacion.Id, &amp;cotizacion.Cotizacion, &amp;fechaString, &amp;cotizacion.CriptoMoneda_ID, &amp;cotizacionesValoresJSON, &amp;cotizacionesFechasJSON, &amp;criptoNombresJSON); err != nil </span><span class="cov0" title="0">{
+                        return nil, criptomonedas.Summary{}, err
+                }</span>
+
+                <span class="cov0" title="0">cotizacion.Fecha, err = time.Parse(time.RFC3339, fechaString)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Println("Error al convertir fecha:", err)
+                        continue</span>
+                }
+                <span class="cov0" title="0">cotizaciones = append(cotizaciones, cotizacion)
+
+                // Parse the summary JSON arrays for the first row only (since it's aggregated)
+                if summary.TotalResults == 0 </span><span class="cov0" title="0">{
+                        var cotizacionesValores []float64
+                        var cotizacionesFechas []string
+                        var criptoNombres []string
+
+                        if err := json.Unmarshal([]byte(cotizacionesValoresJSON), &amp;cotizacionesValores); err != nil </span><span class="cov0" title="0">{
+                                log.Println("Error al parsear cotizaciones valores JSON:", err)
+                                return nil, criptomonedas.Summary{}, err
+                        }</span>
+                        <span class="cov0" title="0">if err := json.Unmarshal([]byte(cotizacionesFechasJSON), &amp;cotizacionesFechas); err != nil </span><span class="cov0" title="0">{
+                                log.Println("Error al parsear cotizaciones fechas JSON:", err)
+                                return nil, criptomonedas.Summary{}, err
+                        }</span>
+                        <span class="cov0" title="0">if err := json.Unmarshal([]byte(criptoNombresJSON), &amp;criptoNombres); err != nil </span><span class="cov0" title="0">{
+                                log.Println("Error al parsear cripto nombres JSON:", err)
+                                return nil, criptomonedas.Summary{}, err
+                        }</span>
+
+                        <span class="cov0" title="0">summary.CotizacionesValores = cotizacionesValores
+                        summary.CotizacionesFechas = cotizacionesFechas
+                        summary.CriptoNombres = criptoNombres</span>
+                }
+        }
+
+        <span class="cov0" title="0">summary.PageNumber = filter.PageNumber
+        summary.PageSize = filter.PageSize
+        summary.TotalResults = len(cotizaciones)
+
+        return cotizaciones, summary, nil</span>
+}
+
+func (r *MySQLCryptoRepository) BorrarCotizacionById(cotizacionId int) error <span class="cov0" title="0">{
+        // Imprimir información de depuración
+        fmt.Printf("Intentando borrar cotización con id %v\n", cotizacionId)
+
+        query := "DELETE FROM cotizaciones WHERE id = ?"
+        args := []interface{}{cotizacionId}
+        fmt.Printf("Ejecutando consulta: %s con argumento: %v\n", query, args)
+
+        result, err := r.db.Exec(query, args...)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("error al ejecutar la consulta DELETE: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">rowsAffected, err := result.RowsAffected()
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("error al obtener filas afectadas: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">fmt.Printf("Filas afectadas: %d\n", rowsAffected)
+        if rowsAffected == 0 </span><span class="cov0" title="0">{
+                return fmt.Errorf("no se borró ninguna cotización con id %v", cotizacionId)
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (r *MySQLCryptoRepository) GuardarCotizacionManual(usuarioId int, cotizacion criptomonedas.Cotizacion) (criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        var cotizacionCompleta criptomonedas.Cotizacion = criptomonedas.Cotizacion{
+                Id:              cotizacion.Id,
+                Cotizacion:      cotizacion.Cotizacion,
+                Fecha:           cotizacion.Fecha,
+                CriptoMoneda_ID: cotizacion.CriptoMoneda_ID,
+                Manual:          true,
+                UsuarioId:       &amp;usuarioId,
+        }
+
+        // Inserta la cotización completa en la base de datos
+        result, err := r.db.Exec(
+                "INSERT INTO cotizaciones (cripto_id, cotizacion, fecha, manual, usuario_id) VALUES (?, ?, ?, TRUE, ?)",
+                cotizacionCompleta.CriptoMoneda_ID,
+                cotizacionCompleta.Cotizacion,
+                cotizacionCompleta.Fecha,
+                usuarioId,
+        )
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al guardar cripto:", err)
+                return criptomonedas.Cotizacion{}, err
+        }</span>
+
+        <span class="cov0" title="0">id, err := result.LastInsertId()
+        if err != nil </span><span class="cov0" title="0">{
+                return criptomonedas.Cotizacion{}, err
+        }</span>
+        <span class="cov0" title="0">cotizacionCompleta.Id = int(id)
+
+        return cotizacionCompleta, nil</span>
+}
+
+func (r *MySQLCryptoRepository) ActualizarCotizacionManual(usuarioId int, cotizacion criptomonedas.Cotizacion) (criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        // Construye la consulta SQL
+        query := "UPDATE cotizaciones SET cripto_id = ?, cotizacion = ?, fecha = ?, manual = TRUE, usuario_id = ? WHERE id = ?"
+
+        // Imprime la consulta SQL con los parámetros
+        fmt.Printf("Ejecutando consulta SQL: %s\n", query)
+        fmt.Printf("Parámetros: cripto_id=%d, cotizacion=%f, fecha=%s, usuario_id=%d, id=%d\n",
+                cotizacion.CriptoMoneda_ID,
+                cotizacion.Cotizacion,
+                cotizacion.Fecha.Format("2006-01-02 15:04:05"), // Formato de fecha según tu base de datos
+                usuarioId,
+                cotizacion.Id,
+        )
+
+        // Ejecuta la consulta SQL
+        _, err := r.db.Exec(
+                query,
+                cotizacion.CriptoMoneda_ID,
+                cotizacion.Cotizacion,
+                cotizacion.Fecha,
+                usuarioId,
+                cotizacion.Id,
+        )
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al actualizar cotización:", err)
+                return criptomonedas.Cotizacion{}, err
+        }</span>
+        <span class="cov0" title="0">return cotizacion, nil</span>
+}
+
+func (r *MySQLCryptoRepository) BorrarCotizacionManual(cotizacion criptomonedas.Cotizacion) error <span class="cov0" title="0">{
+        // Primero, borrar la cotización
+        _, err := r.db.Exec("DELETE FROM cotizaciones WHERE id = ?", cotizacion.Id)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al borrar la cotización:", err)
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package repositories
+
+//go:generate echo $GOPACKAGE/$GOFILE
+//go:generate mockgen -source=./$GOFILE -destination=./mock/$GOFILE -package mock
+
+import (
+        "database/sql"
+        "log"
+        "primerProjecto/internal/entities/criptomonedas"
+)
+
+type MySQLCryptoRepository struct {
+        db *sql.DB
+}
+
+func NewMySQLCryptoRepository(db *sql.DB) *MySQLCryptoRepository <span class="cov0" title="0">{
+        return &amp;MySQLCryptoRepository{db: db}
+}</span>
+
+type CryptoRepository interface {
+        SaveMoneda(cripto criptomonedas.CriptoMoneda) error
+        FindAllMonedas() ([]*criptomonedas.CriptoMoneda, error)
+        FindCryptoByName(name string) (*criptomonedas.CriptoMoneda, error)
+        FindCryptoByCode(codigo string) (*criptomonedas.CriptoMoneda, error)
+        FindByMonedaID(id int) (*criptomonedas.CriptoMoneda, error)
+        UpdateMoneda(id int, moneda criptomonedas.CriptoMoneda) error
+
+        //cotizaciones
+        SaveCotizacion(cripto criptomonedas.Cotizacion) error
+        FindByCotizacionID(id int) (*criptomonedas.Cotizacion, error)
+        FindAllCotizaciones() ([]*criptomonedas.Cotizacion, error)
+        UpdateCotizacion(id int, cotizacion criptomonedas.Cotizacion) error
+        FindAllByFilter(filter criptomonedas.CriptoMonedaFilter) ([]criptomonedas.Cotizacion, criptomonedas.Summary, error)
+        FindAllByFilterForUser(filter criptomonedas.CriptoMonedaFilter, usuarioId int) ([]criptomonedas.Cotizacion, criptomonedas.Summary, error)
+        FindUltimaCotizacion(nombre string) (*criptomonedas.Cotizacion, error)
+        BorrarCotizacionManual(cotizacion criptomonedas.Cotizacion) error
+        GuardarCotizacionManual(usuarioId int, cotizacion criptomonedas.Cotizacion) (criptomonedas.Cotizacion, error)
+        ActualizarCotizacionManual(usuarioId int, cotizacion criptomonedas.Cotizacion) (criptomonedas.Cotizacion, error)
+        BorrarCotizacionById(id int) error
+}
+
+func (r *MySQLCryptoRepository) SaveMoneda(cripto criptomonedas.CriptoMoneda) error <span class="cov0" title="0">{
+        _, err := r.db.Exec("INSERT INTO monedas (Id,Nombre,Codigo) VALUES (?, ?, ?)", cripto.Id, cripto.Nombre, cripto.Codigo)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al guardar cripto:", err)
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (r *MySQLCryptoRepository) FindByMonedaID(id int) (*criptomonedas.CriptoMoneda, error) <span class="cov0" title="0">{
+        query := "SELECT id, nombre,codigo FROM monedas WHERE id = ?"
+        row := r.db.QueryRow(query, id)
+        moneda := criptomonedas.CriptoMoneda{}
+
+        err := row.Scan(&amp;moneda.Id, &amp;moneda.Nombre, &amp;moneda.Codigo)
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        log.Printf("no se encontro moneda con id %d", id)
+                        return nil, err
+                }</span>
+        }
+        <span class="cov0" title="0">return &amp;moneda, nil</span>
+}
+
+func (r *MySQLCryptoRepository) FindAllMonedas() ([]*criptomonedas.CriptoMoneda, error) <span class="cov0" title="0">{
+        query := "SELECT * FROM monedas"
+        moneda := criptomonedas.CriptoMoneda{}
+        rows, err := r.db.Query(query)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println("no se encotraron lineas")
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer rows.Close()
+
+        var criptomonedas []*criptomonedas.CriptoMoneda
+
+        for rows.Next() </span><span class="cov0" title="0">{
+                moneda1 := moneda
+                err := rows.Scan(&amp;moneda1.Nombre, &amp;moneda1.Id, &amp;moneda.Codigo)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Println("Error al escanear fila:", err)
+                        continue</span>
+                }
+                <span class="cov0" title="0">criptomonedas = append(criptomonedas, &amp;moneda)</span>
+        }
+        <span class="cov0" title="0">if err := rows.Err(); err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al iterar sobre las filas:", err)
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return criptomonedas, nil</span>
+
+}
+
+func (r *MySQLCryptoRepository) UpdateMoneda(id int, moneda criptomonedas.CriptoMoneda) error <span class="cov0" title="0">{
+        query := "UPDATE monedas SET nombre = ? WHERE id = ?"
+        _, err := r.db.Exec(query, moneda.Nombre, id)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al actualizar la moneda:", err)
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (r *MySQLCryptoRepository) FindCryptoByName(name string) (*criptomonedas.CriptoMoneda, error) <span class="cov0" title="0">{
+        query := "SELECT id, nombre, codigo FROM monedas WHERE nombre = ?"
+        var cripto criptomonedas.CriptoMoneda
+        err := r.db.QueryRow(query, name).Scan(&amp;cripto.Id, &amp;cripto.Nombre, &amp;cripto.Codigo)
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        return nil, nil // No se encontró la criptomoneda
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+        <span class="cov0" title="0">return &amp;cripto, nil</span>
+}
+
+func (r *MySQLCryptoRepository) FindCryptoByCode(codigo string) (*criptomonedas.CriptoMoneda, error) <span class="cov0" title="0">{
+        query := "SELECT id, nombre, codigo FROM monedas WHERE codigo = ?"
+        var cripto criptomonedas.CriptoMoneda
+        err := r.db.QueryRow(query, codigo).Scan(&amp;cripto.Id, &amp;cripto.Nombre, &amp;cripto.Codigo)
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        return nil, nil // No se encontró la criptomoneda
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+        <span class="cov0" title="0">return &amp;cripto, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: ./criptoMonedasRepository.go
+//
+// Generated by this command:
+//
+//        mockgen -source=./criptoMonedasRepository.go -destination=./mock/criptoMonedasRepository.go -package mock
+//
+
+// Package mock is a generated GoMock package.
+package mock
+
+import (
+        criptomonedas "primerProjecto/internal/entities/criptomonedas"
+        reflect "reflect"
+
+        gomock "go.uber.org/mock/gomock"
+)
+
+// MockCryptoRepository is a mock of CryptoRepository interface.
+type MockCryptoRepository struct {
+        ctrl     *gomock.Controller
+        recorder *MockCryptoRepositoryMockRecorder
+}
+
+// MockCryptoRepositoryMockRecorder is the mock recorder for MockCryptoRepository.
+type MockCryptoRepositoryMockRecorder struct {
+        mock *MockCryptoRepository
+}
+
+// NewMockCryptoRepository creates a new mock instance.
+func NewMockCryptoRepository(ctrl *gomock.Controller) *MockCryptoRepository <span class="cov8" title="1">{
+        mock := &amp;MockCryptoRepository{ctrl: ctrl}
+        mock.recorder = &amp;MockCryptoRepositoryMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockCryptoRepository) EXPECT() *MockCryptoRepositoryMockRecorder <span class="cov8" title="1">{
+        return m.recorder
+}</span>
+
+// ActualizarCotizacionManual mocks base method.
+func (m *MockCryptoRepository) ActualizarCotizacionManual(usuarioId int, cotizacion criptomonedas.Cotizacion) (criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "ActualizarCotizacionManual", usuarioId, cotizacion)
+        ret0, _ := ret[0].(criptomonedas.Cotizacion)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// ActualizarCotizacionManual indicates an expected call of ActualizarCotizacionManual.
+func (mr *MockCryptoRepositoryMockRecorder) ActualizarCotizacionManual(usuarioId, cotizacion any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActualizarCotizacionManual", reflect.TypeOf((*MockCryptoRepository)(nil).ActualizarCotizacionManual), usuarioId, cotizacion)
+}</span>
+
+// BorrarCotizacionById mocks base method.
+func (m *MockCryptoRepository) BorrarCotizacionById(id int) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "BorrarCotizacionById", id)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// BorrarCotizacionById indicates an expected call of BorrarCotizacionById.
+func (mr *MockCryptoRepositoryMockRecorder) BorrarCotizacionById(id any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BorrarCotizacionById", reflect.TypeOf((*MockCryptoRepository)(nil).BorrarCotizacionById), id)
+}</span>
+
+// BorrarCotizacionManual mocks base method.
+func (m *MockCryptoRepository) BorrarCotizacionManual(cotizacion criptomonedas.Cotizacion) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "BorrarCotizacionManual", cotizacion)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// BorrarCotizacionManual indicates an expected call of BorrarCotizacionManual.
+func (mr *MockCryptoRepositoryMockRecorder) BorrarCotizacionManual(cotizacion any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BorrarCotizacionManual", reflect.TypeOf((*MockCryptoRepository)(nil).BorrarCotizacionManual), cotizacion)
+}</span>
+
+// FindAllByFilter mocks base method.
+func (m *MockCryptoRepository) FindAllByFilter(filter criptomonedas.CriptoMonedaFilter) ([]criptomonedas.Cotizacion, criptomonedas.Summary, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindAllByFilter", filter)
+        ret0, _ := ret[0].([]criptomonedas.Cotizacion)
+        ret1, _ := ret[1].(criptomonedas.Summary)
+        ret2, _ := ret[2].(error)
+        return ret0, ret1, ret2
+}</span>
+
+// FindAllByFilter indicates an expected call of FindAllByFilter.
+func (mr *MockCryptoRepositoryMockRecorder) FindAllByFilter(filter any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllByFilter", reflect.TypeOf((*MockCryptoRepository)(nil).FindAllByFilter), filter)
+}</span>
+
+// FindAllByFilterForUser mocks base method.
+func (m *MockCryptoRepository) FindAllByFilterForUser(filter criptomonedas.CriptoMonedaFilter, usuarioId int) ([]criptomonedas.Cotizacion, criptomonedas.Summary, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindAllByFilterForUser", filter, usuarioId)
+        ret0, _ := ret[0].([]criptomonedas.Cotizacion)
+        ret1, _ := ret[1].(criptomonedas.Summary)
+        ret2, _ := ret[2].(error)
+        return ret0, ret1, ret2
+}</span>
+
+// FindAllByFilterForUser indicates an expected call of FindAllByFilterForUser.
+func (mr *MockCryptoRepositoryMockRecorder) FindAllByFilterForUser(filter, usuarioId any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllByFilterForUser", reflect.TypeOf((*MockCryptoRepository)(nil).FindAllByFilterForUser), filter, usuarioId)
+}</span>
+
+// FindAllCotizaciones mocks base method.
+func (m *MockCryptoRepository) FindAllCotizaciones() ([]*criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindAllCotizaciones")
+        ret0, _ := ret[0].([]*criptomonedas.Cotizacion)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FindAllCotizaciones indicates an expected call of FindAllCotizaciones.
+func (mr *MockCryptoRepositoryMockRecorder) FindAllCotizaciones() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllCotizaciones", reflect.TypeOf((*MockCryptoRepository)(nil).FindAllCotizaciones))
+}</span>
+
+// FindAllMonedas mocks base method.
+func (m *MockCryptoRepository) FindAllMonedas() ([]*criptomonedas.CriptoMoneda, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindAllMonedas")
+        ret0, _ := ret[0].([]*criptomonedas.CriptoMoneda)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FindAllMonedas indicates an expected call of FindAllMonedas.
+func (mr *MockCryptoRepositoryMockRecorder) FindAllMonedas() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllMonedas", reflect.TypeOf((*MockCryptoRepository)(nil).FindAllMonedas))
+}</span>
+
+// FindByCotizacionID mocks base method.
+func (m *MockCryptoRepository) FindByCotizacionID(id int) (*criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindByCotizacionID", id)
+        ret0, _ := ret[0].(*criptomonedas.Cotizacion)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FindByCotizacionID indicates an expected call of FindByCotizacionID.
+func (mr *MockCryptoRepositoryMockRecorder) FindByCotizacionID(id any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByCotizacionID", reflect.TypeOf((*MockCryptoRepository)(nil).FindByCotizacionID), id)
+}</span>
+
+// FindByMonedaID mocks base method.
+func (m *MockCryptoRepository) FindByMonedaID(id int) (*criptomonedas.CriptoMoneda, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindByMonedaID", id)
+        ret0, _ := ret[0].(*criptomonedas.CriptoMoneda)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FindByMonedaID indicates an expected call of FindByMonedaID.
+func (mr *MockCryptoRepositoryMockRecorder) FindByMonedaID(id any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByMonedaID", reflect.TypeOf((*MockCryptoRepository)(nil).FindByMonedaID), id)
+}</span>
+
+// FindCryptoByCode mocks base method.
+func (m *MockCryptoRepository) FindCryptoByCode(codigo string) (*criptomonedas.CriptoMoneda, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindCryptoByCode", codigo)
+        ret0, _ := ret[0].(*criptomonedas.CriptoMoneda)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FindCryptoByCode indicates an expected call of FindCryptoByCode.
+func (mr *MockCryptoRepositoryMockRecorder) FindCryptoByCode(codigo any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindCryptoByCode", reflect.TypeOf((*MockCryptoRepository)(nil).FindCryptoByCode), codigo)
+}</span>
+
+// FindCryptoByName mocks base method.
+func (m *MockCryptoRepository) FindCryptoByName(name string) (*criptomonedas.CriptoMoneda, error) <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindCryptoByName", name)
+        ret0, _ := ret[0].(*criptomonedas.CriptoMoneda)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FindCryptoByName indicates an expected call of FindCryptoByName.
+func (mr *MockCryptoRepositoryMockRecorder) FindCryptoByName(name any) *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindCryptoByName", reflect.TypeOf((*MockCryptoRepository)(nil).FindCryptoByName), name)
+}</span>
+
+// FindUltimaCotizacion mocks base method.
+func (m *MockCryptoRepository) FindUltimaCotizacion(nombre string) (*criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindUltimaCotizacion", nombre)
+        ret0, _ := ret[0].(*criptomonedas.Cotizacion)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FindUltimaCotizacion indicates an expected call of FindUltimaCotizacion.
+func (mr *MockCryptoRepositoryMockRecorder) FindUltimaCotizacion(nombre any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUltimaCotizacion", reflect.TypeOf((*MockCryptoRepository)(nil).FindUltimaCotizacion), nombre)
+}</span>
+
+// GuardarCotizacionManual mocks base method.
+func (m *MockCryptoRepository) GuardarCotizacionManual(usuarioId int, cotizacion criptomonedas.Cotizacion) (criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GuardarCotizacionManual", usuarioId, cotizacion)
+        ret0, _ := ret[0].(criptomonedas.Cotizacion)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GuardarCotizacionManual indicates an expected call of GuardarCotizacionManual.
+func (mr *MockCryptoRepositoryMockRecorder) GuardarCotizacionManual(usuarioId, cotizacion any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GuardarCotizacionManual", reflect.TypeOf((*MockCryptoRepository)(nil).GuardarCotizacionManual), usuarioId, cotizacion)
+}</span>
+
+// SaveCotizacion mocks base method.
+func (m *MockCryptoRepository) SaveCotizacion(cripto criptomonedas.Cotizacion) error <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "SaveCotizacion", cripto)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// SaveCotizacion indicates an expected call of SaveCotizacion.
+func (mr *MockCryptoRepositoryMockRecorder) SaveCotizacion(cripto any) *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveCotizacion", reflect.TypeOf((*MockCryptoRepository)(nil).SaveCotizacion), cripto)
+}</span>
+
+// SaveMoneda mocks base method.
+func (m *MockCryptoRepository) SaveMoneda(cripto criptomonedas.CriptoMoneda) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "SaveMoneda", cripto)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// SaveMoneda indicates an expected call of SaveMoneda.
+func (mr *MockCryptoRepositoryMockRecorder) SaveMoneda(cripto any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveMoneda", reflect.TypeOf((*MockCryptoRepository)(nil).SaveMoneda), cripto)
+}</span>
+
+// UpdateCotizacion mocks base method.
+func (m *MockCryptoRepository) UpdateCotizacion(id int, cotizacion criptomonedas.Cotizacion) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UpdateCotizacion", id, cotizacion)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UpdateCotizacion indicates an expected call of UpdateCotizacion.
+func (mr *MockCryptoRepositoryMockRecorder) UpdateCotizacion(id, cotizacion any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCotizacion", reflect.TypeOf((*MockCryptoRepository)(nil).UpdateCotizacion), id, cotizacion)
+}</span>
+
+// UpdateMoneda mocks base method.
+func (m *MockCryptoRepository) UpdateMoneda(id int, moneda criptomonedas.CriptoMoneda) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UpdateMoneda", id, moneda)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UpdateMoneda indicates an expected call of UpdateMoneda.
+func (mr *MockCryptoRepositoryMockRecorder) UpdateMoneda(id, moneda any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMoneda", reflect.TypeOf((*MockCryptoRepository)(nil).UpdateMoneda), id, moneda)
+}</span>
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: ./usuarioRepository.go
+//
+// Generated by this command:
+//
+//        mockgen -source=./usuarioRepository.go -destination=./mock/usuarioRepository.go -package mock
+//
+
+// Package mock is a generated GoMock package.
+package mock
+
+import (
+        criptomonedas "primerProjecto/internal/entities/criptomonedas"
+        reflect "reflect"
+
+        gomock "go.uber.org/mock/gomock"
+)
+
+// MockUsuarioRepository is a mock of UsuarioRepository interface.
+type MockUsuarioRepository struct {
+        ctrl     *gomock.Controller
+        recorder *MockUsuarioRepositoryMockRecorder
+}
+
+// MockUsuarioRepositoryMockRecorder is the mock recorder for MockUsuarioRepository.
+type MockUsuarioRepositoryMockRecorder struct {
+        mock *MockUsuarioRepository
+}
+
+// NewMockUsuarioRepository creates a new mock instance.
+func NewMockUsuarioRepository(ctrl *gomock.Controller) *MockUsuarioRepository <span class="cov0" title="0">{
+        mock := &amp;MockUsuarioRepository{ctrl: ctrl}
+        mock.recorder = &amp;MockUsuarioRepositoryMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockUsuarioRepository) EXPECT() *MockUsuarioRepositoryMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// AgregarMonedaFavorita mocks base method.
+func (m *MockUsuarioRepository) AgregarMonedaFavorita(idUsuario, idMoneda int) ([]int, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "AgregarMonedaFavorita", idUsuario, idMoneda)
+        ret0, _ := ret[0].([]int)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// AgregarMonedaFavorita indicates an expected call of AgregarMonedaFavorita.
+func (mr *MockUsuarioRepositoryMockRecorder) AgregarMonedaFavorita(idUsuario, idMoneda any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AgregarMonedaFavorita", reflect.TypeOf((*MockUsuarioRepository)(nil).AgregarMonedaFavorita), idUsuario, idMoneda)
+}</span>
+
+// DeleteMonedasDeInteres mocks base method.
+func (m *MockUsuarioRepository) DeleteMonedasDeInteres(usuarioId int) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "DeleteMonedasDeInteres", usuarioId)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// DeleteMonedasDeInteres indicates an expected call of DeleteMonedasDeInteres.
+func (mr *MockUsuarioRepositoryMockRecorder) DeleteMonedasDeInteres(usuarioId any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteMonedasDeInteres", reflect.TypeOf((*MockUsuarioRepository)(nil).DeleteMonedasDeInteres), usuarioId)
+}</span>
+
+// FindMonedasByUsuarioID mocks base method.
+func (m *MockUsuarioRepository) FindMonedasByUsuarioID(id int) ([]int, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindMonedasByUsuarioID", id)
+        ret0, _ := ret[0].([]int)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FindMonedasByUsuarioID indicates an expected call of FindMonedasByUsuarioID.
+func (mr *MockUsuarioRepositoryMockRecorder) FindMonedasByUsuarioID(id any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindMonedasByUsuarioID", reflect.TypeOf((*MockUsuarioRepository)(nil).FindMonedasByUsuarioID), id)
+}</span>
+
+// FindUsuarioById mocks base method.
+func (m *MockUsuarioRepository) FindUsuarioById(id int) (*criptomonedas.Usuario, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindUsuarioById", id)
+        ret0, _ := ret[0].(*criptomonedas.Usuario)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FindUsuarioById indicates an expected call of FindUsuarioById.
+func (mr *MockUsuarioRepositoryMockRecorder) FindUsuarioById(id any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUsuarioById", reflect.TypeOf((*MockUsuarioRepository)(nil).FindUsuarioById), id)
+}</span>
+
+// FindUsuariosByMonedaID mocks base method.
+func (m *MockUsuarioRepository) FindUsuariosByMonedaID(id int) ([]int, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindUsuariosByMonedaID", id)
+        ret0, _ := ret[0].([]int)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FindUsuariosByMonedaID indicates an expected call of FindUsuariosByMonedaID.
+func (mr *MockUsuarioRepositoryMockRecorder) FindUsuariosByMonedaID(id any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUsuariosByMonedaID", reflect.TypeOf((*MockUsuarioRepository)(nil).FindUsuariosByMonedaID), id)
+}</span>
+
+// PatchUsuarioByID mocks base method.
+func (m *MockUsuarioRepository) PatchUsuarioByID(id int, updates map[string]any) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "PatchUsuarioByID", id, updates)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// PatchUsuarioByID indicates an expected call of PatchUsuarioByID.
+func (mr *MockUsuarioRepositoryMockRecorder) PatchUsuarioByID(id, updates any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PatchUsuarioByID", reflect.TypeOf((*MockUsuarioRepository)(nil).PatchUsuarioByID), id, updates)
+}</span>
+
+// RegistrarAuditoria mocks base method.
+func (m *MockUsuarioRepository) RegistrarAuditoria(usuarioId, cotizacionID int, logOperacion string) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "RegistrarAuditoria", usuarioId, cotizacionID, logOperacion)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// RegistrarAuditoria indicates an expected call of RegistrarAuditoria.
+func (mr *MockUsuarioRepositoryMockRecorder) RegistrarAuditoria(usuarioId, cotizacionID, logOperacion any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegistrarAuditoria", reflect.TypeOf((*MockUsuarioRepository)(nil).RegistrarAuditoria), usuarioId, cotizacionID, logOperacion)
+}</span>
+
+// SaveUsuario mocks base method.
+func (m *MockUsuarioRepository) SaveUsuario(usuario criptomonedas.Usuario) (int, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "SaveUsuario", usuario)
+        ret0, _ := ret[0].(int)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// SaveUsuario indicates an expected call of SaveUsuario.
+func (mr *MockUsuarioRepositoryMockRecorder) SaveUsuario(usuario any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveUsuario", reflect.TypeOf((*MockUsuarioRepository)(nil).SaveUsuario), usuario)
+}</span>
+
+// UpdateMonedasDeInteres mocks base method.
+func (m *MockUsuarioRepository) UpdateMonedasDeInteres(usuarioId int, monedas []int) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UpdateMonedasDeInteres", usuarioId, monedas)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UpdateMonedasDeInteres indicates an expected call of UpdateMonedasDeInteres.
+func (mr *MockUsuarioRepositoryMockRecorder) UpdateMonedasDeInteres(usuarioId, monedas any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMonedasDeInteres", reflect.TypeOf((*MockUsuarioRepository)(nil).UpdateMonedasDeInteres), usuarioId, monedas)
+}</span>
+
+// UpdateUsuarioById mocks base method.
+func (m *MockUsuarioRepository) UpdateUsuarioById(id int, usuario criptomonedas.Usuario) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UpdateUsuarioById", id, usuario)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UpdateUsuarioById indicates an expected call of UpdateUsuarioById.
+func (mr *MockUsuarioRepositoryMockRecorder) UpdateUsuarioById(id, usuario any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUsuarioById", reflect.TypeOf((*MockUsuarioRepository)(nil).UpdateUsuarioById), id, usuario)
+}</span>
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package repositories
+
+//go:generate echo $GOPACKAGE/$GOFILE
+//go:generate mockgen -source=./$GOFILE -destination=./mock/$GOFILE -package mock
+
+import (
+        "database/sql"
+        "fmt"
+        "log"
+        "primerProjecto/internal/entities/criptomonedas"
+        "strings"
+)
+
+type MySQLUsuarioRepository struct {
+        db *sql.DB
+}
+
+func NewMySQLUsuarioRepository(db *sql.DB) *MySQLUsuarioRepository <span class="cov0" title="0">{
+        return &amp;MySQLUsuarioRepository{db: db}
+}</span>
+
+type UsuarioRepository interface {
+        SaveUsuario(usuario criptomonedas.Usuario) (int, error)
+        UpdateUsuarioById(id int, usuario criptomonedas.Usuario) error
+        FindUsuarioById(id int) (*criptomonedas.Usuario, error)
+        FindMonedasByUsuarioID(id int) ([]int, error)
+        FindUsuariosByMonedaID(id int) ([]int, error)
+        PatchUsuarioByID(id int, updates map[string]interface{}) error
+        AgregarMonedaFavorita(idUsuario, idMoneda int) ([]int, error)
+        UpdateMonedasDeInteres(usuarioId int, monedas []int) error
+        DeleteMonedasDeInteres(usuarioId int) error
+        RegistrarAuditoria(usuarioId, cotizacionID int, logOperacion string) error
+}
+
+func (r *MySQLUsuarioRepository) SaveUsuario(usuario criptomonedas.Usuario) (int, error) <span class="cov0" title="0">{
+        query := `INSERT INTO usuarios (nombre, apellidos, fecha_nacimiento, codigo_usuario, email, tipo_documento, fecha_registro, esta_activo)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+        result, err := r.db.Exec(query, usuario.Nombre, usuario.Apellidos, usuario.Fecha_Nacimiento, usuario.CodigoUsuario, usuario.Email, usuario.TipoDocumento, usuario.Fecha_registro, usuario.Esta_activo)
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+        <span class="cov0" title="0">id, err := result.LastInsertId()
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+        <span class="cov0" title="0">return int(id), nil</span>
+}
+
+func (r *MySQLUsuarioRepository) UpdateUsuarioById(id int, usuario criptomonedas.Usuario) error <span class="cov0" title="0">{
+        query := `
+                UPDATE usuarios
+                SET nombre = ?, apellidos = ?, fecha_nacimiento = ?, codigo_usuario = ?, email = ?, tipo_documento = ?, fecha_registro = ?, esta_activo = ?
+                WHERE id = ?`
+        _, err := r.db.Exec(query,
+                usuario.Nombre, usuario.Apellidos, usuario.Fecha_Nacimiento, usuario.CodigoUsuario,
+                usuario.Email, usuario.TipoDocumento, usuario.Fecha_registro, usuario.Esta_activo, id,
+        )
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al actualizar el Usuario:", err)
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (r *MySQLUsuarioRepository) FindUsuarioById(id int) (*criptomonedas.Usuario, error) <span class="cov0" title="0">{
+        query := `
+                SELECT id, nombre, apellidos, fecha_nacimiento, codigo_usuario, email, tipo_documento, fecha_registro, esta_activo
+                FROM usuarios
+                WHERE id = ?`
+        var usuario criptomonedas.Usuario
+        err := r.db.QueryRow(query, id).Scan(
+                &amp;usuario.Id, &amp;usuario.Nombre, &amp;usuario.Apellidos, &amp;usuario.Fecha_Nacimiento,
+                &amp;usuario.CodigoUsuario, &amp;usuario.Email, &amp;usuario.TipoDocumento,
+                &amp;usuario.Fecha_registro, &amp;usuario.Esta_activo,
+        )
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        return nil, nil // No se encontró el usuario
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+        <span class="cov0" title="0">return &amp;usuario, nil</span>
+}
+
+func (r *MySQLUsuarioRepository) FindMonedasByUsuarioID(id int) ([]int, error) <span class="cov0" title="0">{
+        query := "SELECT moneda_id FROM usuario_moneda WHERE usuario_id = ?"
+        rows, err := r.db.Query(query, id)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer rows.Close()
+
+        var monedasId []int
+        for rows.Next() </span><span class="cov0" title="0">{
+                var monedaId int
+                if err := rows.Scan(&amp;monedaId); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">monedasId = append(monedasId, monedaId)</span>
+        }
+        <span class="cov0" title="0">if err := rows.Err(); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return monedasId, nil</span>
+}
+
+func (r *MySQLUsuarioRepository) FindUsuariosByMonedaID(id int) ([]int, error) <span class="cov0" title="0">{
+        query := "SELECT usuario_id FROM usuario_moneda WHERE moneda_id = ?"
+        rows, err := r.db.Query(query, id)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer rows.Close()
+
+        var usuariosId []int
+        for rows.Next() </span><span class="cov0" title="0">{
+                var usuarioId int
+                if err := rows.Scan(&amp;usuariosId); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">usuariosId = append(usuariosId, usuarioId)</span>
+        }
+        <span class="cov0" title="0">if err := rows.Err(); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return usuariosId, nil</span>
+}
+
+func (r *MySQLUsuarioRepository) PatchUsuarioByID(id int, updates map[string]interface{}) error <span class="cov0" title="0">{
+        setParts := []string{}
+        args := []interface{}{}
+        for key, value := range updates </span><span class="cov0" title="0">{
+                setParts = append(setParts, key+" = ?")
+                args = append(args, value)
+        }</span>
+        <span class="cov0" title="0">args = append(args, id)
+        query := fmt.Sprintf("UPDATE usuarios SET %s WHERE id = ?", strings.Join(setParts, ", "))
+        _, err := r.db.Exec(query, args...)
+        return err</span>
+}
+
+func (r *MySQLUsuarioRepository) AgregarMonedaFavorita(idUsuario, idMoneda int) ([]int, error) <span class="cov0" title="0">{
+        query := "INSERT INTO usuario_moneda (usuario_id, moneda_id) VALUES (?, ?)"
+        _, err := r.db.Exec(query, idUsuario, idMoneda)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("Error al asociar usuario con moneda: %s", err)
+                return []int{}, err
+        }</span>
+        <span class="cov0" title="0">return []int{idUsuario, idMoneda}, nil</span>
+}
+
+func (r *MySQLUsuarioRepository) UpdateMonedasDeInteres(usuarioId int, monedas []int) error <span class="cov0" title="0">{
+        tx, err := r.db.Begin()
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">_, err = tx.Exec("DELETE FROM usuario_moneda WHERE usuario_id = ?", usuarioId)
+        if err != nil </span><span class="cov0" title="0">{
+                tx.Rollback()
+                return err
+        }</span>
+
+        <span class="cov0" title="0">for _, monedaId := range monedas </span><span class="cov0" title="0">{
+                _, err := tx.Exec("INSERT INTO usuario_moneda (usuario_id, moneda_id) VALUES (?, ?)", usuarioId, monedaId)
+                if err != nil </span><span class="cov0" title="0">{
+                        tx.Rollback()
+                        return err
+                }</span>
+        }
+
+        <span class="cov0" title="0">return tx.Commit()</span>
+}
+
+func (r *MySQLUsuarioRepository) DeleteMonedasDeInteres(usuarioId int) error <span class="cov0" title="0">{
+        _, err := r.db.Exec("DELETE FROM usuario_moneda WHERE usuario_id = ?", usuarioId)
+        return err
+}</span>
+
+func (r *MySQLUsuarioRepository) RegistrarAuditoria(usuarioId, cotizacionID int, logOperacion string) error <span class="cov0" title="0">{
+        query := "INSERT INTO auditoria_cotizacion (usuario_id, cotizacion_id, log) VALUES (?, ?, ?)"
+        _, err := r.db.Exec(query, usuarioId, cotizacionID, logOperacion)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Println("Error al registrar auditoría:", err)
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package services
+
+import (
+        "net/http"
+        "strings"
+
+        "github.com/gin-gonic/gin"
+)
+
+func AuthMiddleware() gin.HandlerFunc <span class="cov0" title="0">{
+        return func(c *gin.Context) </span><span class="cov0" title="0">{
+                token := c.GetHeader("Authorization")
+                if token == "" </span><span class="cov0" title="0">{
+                        c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing token"})
+                        c.Abort()
+                        return
+                }</span>
+
+                // Suponiendo que el token válido sea "Bearer mysecrettoken"
+                <span class="cov0" title="0">if !strings.HasPrefix(token, "Bearer ") || token != "Bearer mysecrettoken" </span><span class="cov0" title="0">{
+                        c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+                        c.Abort()
+                        return
+                }</span>
+
+                // Continuar con el siguiente handler si el token es válido
+                <span class="cov0" title="0">c.Next()</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package services
+
+import (
+        "fmt"
+        criptomonedas "primerProjecto/internal/entities/criptomonedas"
+)
+
+// Método para guardar una nueva criptomoneda
+func (s *CryptoService) SaveCotizacion(cripto criptomonedas.Cotizacion) error <span class="cov8" title="1">{
+        return s.repo.SaveCotizacion(cripto)
+}</span>
+
+// Método para actualizar una criptomoneda por ID
+func (s *CryptoService) UpdateCotizacion(id int, cripto criptomonedas.Cotizacion) error <span class="cov0" title="0">{
+        return s.repo.UpdateCotizacion(id, cripto)
+}</span>
+
+func (s *CryptoService) FindUltimaCotizacion(nombre string) (*criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        return s.repo.FindUltimaCotizacion(nombre)
+}</span>
+
+// Método para encontrar todas las cotizaciones
+func (s *CryptoService) FindAll() ([]*criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        return s.repo.FindAllCotizaciones()
+}</span>
+
+func (s *CryptoService) FindAllByFilter(filter criptomonedas.CriptoMonedaFilter) ([]criptomonedas.Cotizacion, criptomonedas.Summary, error) <span class="cov0" title="0">{
+        return s.repo.FindAllByFilter(filter)
+}</span>
+
+func (s *CryptoService) FindAllByFilterForUser(filter criptomonedas.CriptoMonedaFilter, userId int) ([]criptomonedas.Cotizacion, criptomonedas.Summary, error) <span class="cov0" title="0">{
+        return s.repo.FindAllByFilterForUser(filter, userId)
+}</span>
+
+// guardar cotizacion externa
+func (s *CryptoService) GuardarCotizacionExterna(nombreMoneda, api string) error <span class="cov8" title="1">{
+        cotizacion, err := s.GetCotizacion(api, nombreMoneda, "USD")
+        if err != nil </span><span class="cov8" title="1">{
+                return fmt.Errorf("no se pudo guardar la cotizacion externa para moneda %s", nombreMoneda)
+        }</span>
+
+        <span class="cov8" title="1">cripto, err := s.repo.FindCryptoByName(nombreMoneda)
+        if err != nil </span><span class="cov8" title="1">{
+                return fmt.Errorf("error al buscar la criptomoneda %s en la base de datos", nombreMoneda)
+        }</span>
+        <span class="cov8" title="1">if cripto == nil </span><span class="cov8" title="1">{
+                return fmt.Errorf("la criptomoneda %s no está registrada en la base de datos", nombreMoneda)
+        }</span>
+
+        <span class="cov8" title="1">cotizacion.CriptoMoneda_ID = cripto.Id
+        s.repo.SaveCotizacion(cotizacion)
+        return nil</span>
+}
+
+func (s *CryptoService) GetCotizacion(api, moneda, fiat string) (criptomonedas.Cotizacion, error) <span class="cov8" title="1">{
+        cotizador, err := s.getCotizador(api)
+        if err != nil </span><span class="cov8" title="1">{
+                return criptomonedas.Cotizacion{}, fmt.Errorf("el Cotizador %s no es soportado", api)
+        }</span>
+        <span class="cov8" title="1">monedaEnbase, err := s.repo.FindCryptoByName(moneda)
+        if err != nil </span><span class="cov8" title="1">{
+                return criptomonedas.Cotizacion{}, fmt.Errorf("la criptomoneda %s no está registrada en la base de datos", moneda)
+        }</span>
+        <span class="cov8" title="1">if monedaEnbase == nil </span><span class="cov8" title="1">{
+                return criptomonedas.Cotizacion{}, fmt.Errorf("la criptomoneda %s no está registrada en la base de datos", moneda)
+        }</span>
+        <span class="cov8" title="1">return cotizador.GetCotizacionExterna(monedaEnbase.Nombre, monedaEnbase.Codigo, fiat)</span>
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package services
+
+import (
+        "fmt"
+        cotizadores "primerProjecto/internal/adapters/cotizadores"
+        repositories "primerProjecto/internal/adapters/repositories"
+        criptomonedas "primerProjecto/internal/entities/criptomonedas"
+)
+
+type CryptoService struct {
+        repo         repositories.CryptoRepository
+        getCotizador func(name string) (cotizadores.Cotizador, error) // Función para obtener el cotizador
+}
+
+// NewCryptoService crea una nueva instancia del servicio de criptomonedas con un cotizador
+func NewCryptoService(repo repositories.CryptoRepository, getCotizador func(name string) (cotizadores.Cotizador, error)) *CryptoService <span class="cov8" title="1">{
+        return &amp;CryptoService{repo: repo, getCotizador: getCotizador}
+}</span>
+
+
+type CryptoServiceInterface interface {
+        GetCotizacion(api, moneda, fiat string) (criptomonedas.Cotizacion, error)
+        FindMonedaByID(id int) (*criptomonedas.CriptoMoneda, error)
+        SaveMoneda(cripto criptomonedas.CriptoMoneda)
+        UpdateMoneda(id int, cripto criptomonedas.CriptoMoneda)
+        FindCriptoByNombre(nombre string) (*criptomonedas.CriptoMoneda, error)
+        SaveMonedaConCotizacion(nombre, api string) error
+}
+
+
+
+
+// Método para encontrar una criptomoneda por ID
+func (s *CryptoService) FindMonedaByID(id int) (*criptomonedas.CriptoMoneda, error) <span class="cov0" title="0">{
+        return s.repo.FindByMonedaID(id)
+}</span>
+
+// guardar moneda normal
+func (s *CryptoService) SaveMoneda(cripto criptomonedas.CriptoMoneda) error <span class="cov0" title="0">{
+        return s.repo.SaveMoneda(cripto)
+}</span>
+
+// Método para actualizar una criptomoneda por ID
+func (s *CryptoService) UpdateMoneda(id int, cripto criptomonedas.CriptoMoneda) error <span class="cov0" title="0">{
+        return s.repo.UpdateMoneda(id, cripto)
+}</span>
+
+func (s *CryptoService) FindCriptoByNombre(nombre string) (*criptomonedas.CriptoMoneda, error) <span class="cov0" title="0">{
+        return s.repo.FindCryptoByName(nombre)
+}</span>
+
+// guardar moneda y buscar cotizacion en la api especificada
+func (s *CryptoService) SaveMonedaConCotizacion(nombre, api string) error <span class="cov0" title="0">{
+
+        // Buscar la criptomoneda por nombre
+        cripto, err := s.repo.FindCryptoByName(nombre)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">if cripto != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("la criptomoneda %s ya está registrada en la base de datos", nombre)
+        }</span>
+        // Guardar la nueva criptomoneda
+        <span class="cov0" title="0">cripto = &amp;criptomonedas.CriptoMoneda{Nombre: nombre}
+        if err := s.repo.SaveMoneda(*cripto); err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("la criptomoneda %s no se pudo guardar", nombre)
+        }</span>
+
+        // Obtener la cotización utilizando el handler apropiado
+        <span class="cov0" title="0">cotizacion, Error := s.GetCotizacion(api, nombre, "USD")
+        if Error != nil </span><span class="cov0" title="0">{
+
+                return fmt.Errorf("no se pudo guardar la cotizacion externa para moneda %s", nombre)
+        }</span>
+        <span class="cov0" title="0">cotizacion.CriptoMoneda_ID = cripto.Id
+        s.repo.SaveCotizacion(cotizacion)
+        return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package services
+
+import (
+        "errors"
+        "fmt"
+        repositories "primerProjecto/internal/adapters/repositories"
+        "primerProjecto/internal/entities/criptomonedas"
+)
+
+/*type UsuarioService struct {
+        repoUsuario *repositories.MySQLUsuarioRepository
+        repoCripto  *repositories.MySQLCryptoRepository
+}
+
+func NewUsuarioService(repo *repositories.MySQLUsuarioRepository, repo2 *repositories.MySQLCryptoRepository) *UsuarioService {
+        s := &amp;UsuarioService{repoUsuario: repo, repoCripto: repo2}
+        return s
+}*/
+
+type UsuarioService struct {
+        repoUsuario repositories.UsuarioRepository
+        repoCripto  repositories.CryptoRepository
+}
+
+func NewUsuarioService(repoUsuario repositories.UsuarioRepository, repoCripto repositories.CryptoRepository) *UsuarioService <span class="cov0" title="0">{
+        s := &amp;UsuarioService{repoUsuario: repoUsuario, repoCripto: repoCripto}
+        return s
+}</span>
+
+func (s *UsuarioService) CreateUsuario(usuario criptomonedas.Usuario, monedasFavoritas []string) error <span class="cov0" title="0">{
+        id, err := s.repoUsuario.SaveUsuario(usuario)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">for _, monedaCodigo := range monedasFavoritas </span><span class="cov0" title="0">{
+                moneda, err := s.repoCripto.FindCryptoByCode(monedaCodigo)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">_, err = s.repoUsuario.AgregarMonedaFavorita(id, moneda.Id)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (s *UsuarioService) UpdateUsuarioById(id int, usuario criptomonedas.Usuario) error <span class="cov0" title="0">{
+        return s.repoUsuario.UpdateUsuarioById(id, usuario)
+}</span>
+
+func (s *UsuarioService) FindUsuarioByID(id int) (*criptomonedas.Usuario, error) <span class="cov0" title="0">{
+        return s.repoUsuario.FindUsuarioById(id)
+}</span>
+
+func (s *UsuarioService) FindMonedasByUsuarioID(id int) ([]int, error) <span class="cov0" title="0">{
+        return s.repoUsuario.FindMonedasByUsuarioID(id)
+}</span>
+
+func (s *UsuarioService) FindUsuariosByMonedaID(id int) ([]int, error) <span class="cov0" title="0">{
+        return s.repoUsuario.FindUsuariosByMonedaID(id)
+}</span>
+
+func (s *UsuarioService) PatchUsuarioByID(id int, updates map[string]interface{}, monedas []string, eliminarMonedas bool) error <span class="cov0" title="0">{
+        if len(updates) == 0 &amp;&amp; !eliminarMonedas &amp;&amp; len(monedas) == 0 </span><span class="cov0" title="0">{
+                return errors.New("no hay actualizaciones para realizar")
+        }</span>
+
+        <span class="cov0" title="0">if err := s.repoUsuario.PatchUsuarioByID(id, updates); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">var ids []int
+        for _, codigo := range monedas </span><span class="cov0" title="0">{
+                moneda, err := s.repoCripto.FindCryptoByCode(codigo)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil
+                }</span>
+                <span class="cov0" title="0">ids = append(ids, moneda.Id)</span>
+        }
+
+        <span class="cov0" title="0">if eliminarMonedas </span><span class="cov0" title="0">{
+                if err := s.repoUsuario.DeleteMonedasDeInteres(id); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        } else<span class="cov0" title="0"> if len(monedas) &gt; 0 </span><span class="cov0" title="0">{
+                if err := s.repoUsuario.UpdateMonedasDeInteres(id, ids); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (s *UsuarioService) UpdateMonedasDeInteres(id int, monedas []string) error <span class="cov0" title="0">{
+        var ids []int
+        for _, codigo := range monedas </span><span class="cov0" title="0">{
+                moneda, err := s.repoCripto.FindCryptoByCode(codigo)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil
+                }</span>
+                <span class="cov0" title="0">ids = append(ids, moneda.Id)</span>
+        }
+        <span class="cov0" title="0">if err := s.repoUsuario.UpdateMonedasDeInteres(id, ids); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (s *UsuarioService) GuardarMonedaFavorita(nombreMoneda string, UsuarioId int) error <span class="cov0" title="0">{
+
+        // Buscar la criptomoneda por nombre
+        cripto, err := s.repoCripto.FindCryptoByName(nombreMoneda)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">if cripto != nil </span><span class="cov0" title="0">{
+                _, err = s.repoUsuario.AgregarMonedaFavorita(UsuarioId, cripto.Id)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">return nil</span>
+        }
+        // Guardar la nueva criptomoneda
+        <span class="cov0" title="0">cripto = &amp;criptomonedas.CriptoMoneda{Nombre: nombreMoneda}
+        if err := s.repoCripto.SaveMoneda(*cripto); err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("la criptomoneda %s no se pudo guardar", nombreMoneda)
+        }</span>
+        <span class="cov0" title="0">_, err = s.repoUsuario.AgregarMonedaFavorita(UsuarioId, cripto.Id)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (s *UsuarioService) GuardarCotizacionManual(usuarioId int, cotizacion criptomonedas.Cotizacion) (criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        cotizacionCreada, err := s.repoCripto.GuardarCotizacionManual(usuarioId, cotizacion)
+        if err != nil </span><span class="cov0" title="0">{
+                return cotizacionCreada, fmt.Errorf("la cotizacion no se pudo guardar")
+        }</span>
+        <span class="cov0" title="0">s.repoUsuario.RegistrarAuditoria(usuarioId, cotizacionCreada.Id, "cotizacion Creada")
+        return cotizacionCreada, nil</span>
+}
+
+func (s *UsuarioService) ActualizarCotizacionManual(usuarioId int, cotizacion criptomonedas.Cotizacion) (criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        cotizacionActualizada, err := s.repoCripto.ActualizarCotizacionManual(usuarioId, cotizacion)
+        if err != nil </span><span class="cov0" title="0">{
+                return cotizacionActualizada, fmt.Errorf("la cotizacion no se pudo actualizar")
+        }</span>
+        <span class="cov0" title="0">s.repoUsuario.RegistrarAuditoria(usuarioId, cotizacionActualizada.Id, "cotizacion Actualizada")
+        return cotizacionActualizada, nil</span>
+}
+
+func (s *UsuarioService) BorrarCotizacionManual(cotizacionId int) (*criptomonedas.Cotizacion, error) <span class="cov0" title="0">{
+        cotizacion, err := s.repoCripto.FindByCotizacionID(cotizacionId)
+        if err != nil </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("no se encontro cotizacion de id %v", cotizacionId)
+        }</span>
+
+        <span class="cov0" title="0">if !cotizacion.Manual </span><span class="cov0" title="0">{
+                return cotizacion, fmt.Errorf("la cotizacion no es manual, no se puede borrar")
+        }</span>
+        //s.repoUsuario.RegistrarAuditoria(usuarioId, cotizacionActualizada.Id, "cotizacion Actualizada")
+        <span class="cov0" title="0">s.repoCripto.BorrarCotizacionById(cotizacion.Id)
+
+        return cotizacion, nil</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

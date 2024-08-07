@@ -444,6 +444,122 @@
                 }
             }
         },
+        "/csv/async/download/{task_id}": {
+            "get": {
+                "description": "Descarga el archivo CSV generado asíncronamente mediante el ID de la tarea",
+                "produces": [
+                    "text/csv"
+                ],
+                "tags": [
+                    "csv"
+                ],
+                "summary": "Descargar archivo CSV generado",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID de la tarea",
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "404": {
+                        "description": "Error al descargar el archivo CSV",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/csv/async/generate": {
+            "post": {
+                "description": "Inicia una tarea para generar un archivo CSV con datos de criptomonedas de forma asíncrona",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "csv"
+                ],
+                "summary": "Iniciar tarea asíncrona de generación de CSV",
+                "responses": {
+                    "200": {
+                        "description": "task_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/csv/async/status/{task_id}": {
+            "get": {
+                "description": "Obtiene el estado de una tarea asíncrona de generación de CSV mediante el ID de la tarea",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "csv"
+                ],
+                "summary": "Obtener el estado de una tarea de generación de CSV",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID de la tarea",
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "status",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Tarea no encontrada",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/csv/sync/generate": {
+            "get": {
+                "description": "Genera un archivo CSV con datos de criptomonedas de forma sincrónica",
+                "produces": [
+                    "text/csv"
+                ],
+                "tags": [
+                    "csv"
+                ],
+                "summary": "Generar CSV sincrónico",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al generar el archivo CSV",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/usuarios": {
             "post": {
                 "description": "Create a new user along with their favorite cryptocurrencies",

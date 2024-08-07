@@ -142,6 +142,12 @@ func main() {
 	router.POST("/cryptocurrencies/externa", controller.SaveMonedaConCotizacion)
 	router.POST("/cotization/externa", controller.SaveCotizacionExterna)*/
 
+	//reportes csv
+	router.GET("/csv/sync/generate", criptoHandler.DownloadCSV)
+	router.POST("/csv/async/generate", criptoHandler.StartCSVTask)
+	router.GET("/csv/async/status/:task_id", criptoHandler.GetTaskStatus)
+	router.GET("/csv/async/download/:task_id", criptoHandler.DownloadCSVFile)
+
 	//cotizaciones manuales
 	router.POST("cotization/manual", usuarioHandler.RegistrarCotizacionManual)
 	router.DELETE("cotizacion/manual/:id", usuarioHandler.BorrarCotizacionManual)
